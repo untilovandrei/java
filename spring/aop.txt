@@ -1,0 +1,215 @@
+The Aspect Oriented Programming (AOP) framework is a components of Spring Framework.
+In OOP the unit of modularity is the class 
+In AOP the unit of modularity is the aspect.
+
+AOP Concepts:
+	- Aspect : A modularization of a concern that cuts across multiple objects. Each aspect focuses on a specific 
+				crosscutting functionality
+
+	- Join point : A point during the execution of a script, such as the execution of a method or property access
+
+	- Advice : Action taken by an aspect at a particular join point
+
+	- Pointcut : A regular expression that matches join points. 
+				An advice is associated with a pointcut expression and runs at any join point that matches the pointcut
+
+	*- Introduction : An introduction allows you to add new methods or attributes to the existing classes.
+
+	*- Target object : The object being advised by one or more aspects. 
+				This object will always be a proxied object, also referred to as the advised object.
+
+	*- Weaving : Weaving is the process of linking aspects with other application types or objects to create an advised object. 
+				This can be done at compile time, load time, or at runtime
+
+
+Types of Advice : 
+	- before : 	Run advice before the a method execution.
+	- after  : 	Run advice after the method execution, regardless of its outcome.
+	- after-returning : Run advice after the a method execution only if method completes successfully.
+	- after-throwing : Run advice after the a method execution only if method exits by throwing an exception.
+	- around : Run advice before advised method is invoked then return control to invoked method by "joinPoint.proceed();" 
+				and after method returns OK  the advice continues to run   
+
+-----------------------------------------------------------
+-----------------------
+@Pointcut
+-----------------------
+-----------------------------------------------------------
+
+The following example defines a pointcut named 'businessService' that will match 
+the execution of every method available in the classes under the package "com.xyz.myapp.service"
+
+@Pointcut("execution(* com.xyz.myapp.service.*.*(..))") // expression 
+private void businessService() {}  // signature
+
+-----
+-------------
+-----
+
+The following example defines a pointcut named 'getname' that will match the execution of getName() 
+method available in the Student class under the package com.tutorialspoint
+
+@Pointcut("execution(* com.tutorialspoint.Student.getName(..))") 
+private void getname() {}
+
+
+
+
+
+-----------------------------------------------------------
+-----------------------
+Required dependecies for AOP, AspectJ integration
+-----------------------
+-----------------------------------------------------------
+
+
+
+<!-- Spring AOP + AspectJ -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>1.6.11</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.6.11</version>
+		</dependency>
+
+
+
+
+
+
+-----------------------------------------------------------
+-----------------------
+Example of Aspect Module:   >>>>>> the case when are required multiple "advices" on same "pointcut" (reg ex.) according to which will run "join point"(s)
+-----------------------
+-----------------------------------------------------------
+In this case  all advices will be executed on call method " selectAll() " which is mapped to @Pointcut("execution(* com.tutorialspoint.*.*(..))") . 
+These are all methods from classes located in "com.tutorialspoint" package.
+
+
+
+package com.tutorialspoint;
+
+@Aspect
+public class Logging {
+   /** Following is the definition for a pointcut to select
+      *  all the methods available. So advice will be called
+      *  for all the methods.
+   */
+   @Pointcut("execution(* com.tutorialspoint.*.*(..))")       
+   private void selectAll(){}
+
+   /** 
+      * This is the method which I would like to execute
+      * before a selected method execution.
+   */
+   @Before("selectAll()")
+   public void beforeAdvice(){
+      System.out.println("Going to setup student profile.");
+   }
+
+   /** 
+      * This is the method which I would like to execute
+      * after a selected method execution.
+   */
+   @After("selectAll()")
+   public void afterAdvice(){
+      System.out.println("Student profile has been setup.");
+   }
+
+   /** 
+      * This is the method which I would like to execute
+      * when any method returns.
+   */
+   @AfterReturning(pointcut = "selectAll()", returning = "retVal")
+   public void afterReturningAdvice(Object retVal){
+      System.out.println("Returning:" + retVal.toString() );
+   }
+
+   /**
+      * This is the method which I would like to execute
+      * if there is an exception raised by any method.
+   */
+   @AfterThrowing(pointcut = "selectAll()", throwing = "ex")
+   public void AfterThrowingAdvice(IllegalArgumentException ex){
+      System.out.println("There has been an exception: " + ex.toString());   
+   }
+}
+
+
+
+
+
+
+-----------------------------------------------------------
+-----------------------
+Example of Aspect Module:   >>>>>> the case when is required an "advices" on "pointcut" (reg ex.) according to which will run "join point"(s)
+-----------------------
+-----------------------------------------------------------
+In this case during "advice" and  "pointcut" are declared all together. 
+"logBefore" will be executed BEFORE com.mkyong.customer.bo.CustomerBo.addCustomer() method.
+ 
+@Aspect
+public class LoggingAspect {
+
+	@Before("execution(* com.mkyong.customer.bo.CustomerBo.addCustomer(..))")
+	public void logBefore(JoinPoint joinPoint) {
+
+		System.out.println("logBefore() is running!");
+		System.out.println("hijacked : " + joinPoint.getSignature().getName());
+		System.out.println("******");
+	}
+}
+
+-------
+----------
+------
+
+	@After("execution(* com.mkyong.customer.bo.CustomerBo.addCustomer(..))")
+	public void logAfter(JoinPoint joinPoint) {
+
+		System.out.println("logAfter() is running!");
+		System.out.println("hijacked : " + joinPoint.getSignature().getName());
+		System.out.println("******");
+	}
+
+-------
+----------
+------
+
+	@AfterThrowing(pointcut = "execution(* com.mkyong.customer.bo.CustomerBo.addCustomerThrowException(..))"  ,   throwing= "error")
+    public void logAfterThrowing(JoinPoint joinPoint, Throwable error) {
+
+	System.out.println("logAfterThrowing() is running!");
+	System.out.println("hijacked : " + joinPoint.getSignature().getName());
+	System.out.println("Exception : " + error);
+    }
+
+-------
+----------
+------
+
+	@Around("execution(* com.mkyong.customer.bo.CustomerBo.addCustomerAround(..))")
+    public void logAround(ProceedingJoinPoint joinPoint) throws Throwable {
+
+	System.out.println("logAround() is running!");
+	System.out.println("hijacked method : " + joinPoint.getSignature().getName());
+	System.out.println("hijacked arguments : " + Arrays.toString(joinPoint.getArgs()));
+		
+	System.out.println("Around before is running!");
+	joinPoint.proceed(); 										// continue on the intercepted method
+	System.out.println("Around after is running!");
+		
+	System.out.println("******");
+
+   }

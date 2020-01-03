@@ -1,0 +1,491 @@
+-----------------------------------------
+	@Import	 - allows loading @Bean definitions from another configuration class 
+-----------------------------------------
+
+@Configuration
+public class ConfigA {
+   @Bean
+   public A a() {
+      return new A(); 
+   }
+}
+
+
+@Configuration
+@Import(ConfigA.class)
+public class ConfigB {
+   @Bean
+   public B b() {
+      return new B(); 
+   }
+}
+
+public static void main(String[] args) {
+   ApplicationContext ctx = new AnnotationConfigApplicationContext(ConfigB.class);
+   
+   // now both beans A and B will be available...
+   A a = ctx.getBean(A.class);
+   B b = ctx.getBean(B.class);
+}
+
+
+
+-----------------------------------------
+	@Scope	 - default scope is "singleton", but you can override this with the @Scope annotation as follows 
+-----------------------------------------
+
+@Configuration
+public class AppConfig {
+   @Bean
+   @Scope("prototype")    // for each call IoC returns a new instance of Bean
+   public Foo foo() {
+      return new Foo();
+   }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+------------------------------------------------------
+	Core Spring Framework  ANNOTAITONS
+------------------------------------------------------
+-------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+
+
+
+-----------------------------------------
+	@Required  -  	applies to bean property setter methods and it indicates that the affected bean property must be populated 
+					in XML configuration file at configuration time. 
+				 	@Required checks if a particular property has been set or not. 
+				 	annotated field with @Required (is not set) => org.springframework.beans.factory.BeanInitializationException
+-----------------------------------------
+public class Student {
+   private Integer age;
+   private String name;
+
+   @Required
+   public void setAge(Integer age) {   //property age must be initialized during configuration
+      this.age = age;
+   }
+
+
+
+-----------------------------------------
+	@Autowired  -  annotation is used when you want to autowire a bean. @Autowired can be used with a constructor , setter and  field as well.
+				   If you use @Autowired annotation on a field, that field will be autowired with bean having matching data type.
+				   @Autowired is effectively also @Required (unless you explicitly set its parameter required to false)
+				   @Autowired can be used on private properties, but setting it above public setter.
+-----------------------------------------
+public class Store {
+     
+    @Autowired
+    public Item item;
+}
+
+
+
+-----------------------------------------
+	@ComponentScan	 - it is used  with @Configuration annotation to allow Spring to know the packages to scan for annotated components
+					   used to specify base packages using "basePackageClasses" or "basePackage" attributes to scan
+-----------------------------------------
+"basePackageClasses" is used to specify a class which is not included in "basePackages"
+
+@Configuration
+@ComponentScan(	basePackages = {"com.springframework.blog.componentscan.example.demopackageA",
+        						"com.springframework.blog.componentscan.example.demopackageD",
+        						"com.springframework.blog.componentscan.example.demopackageE"},
+        		basePackageClasses = DemoBeanB1.class)
+public class BlogPostsApplicationWithComponentScan {
+...
+}
+
+
+
+-----------------------------------------
+	@Lazy - initalization of beans (init on bean call)  
+----------------------------------------
+
+			-- @Lazy at Class Level  
+@Lazy
+@Configuration
+public class AppConfig {
+
+			-- @Lazy at Method Level
+@Bean
+@Lazy(true)
+public Region getRegion(){
+    return new Region();
+}
+
+			-- @Lazy at Field Level
+@Lazy
+@Autowired
+private City city;
+
+
+-----------------------------------------
+	@Bean - is used at the method level ( to instantiate and configure dependencies )
+			works with @Configuration to create Spring beans
+----------------------------------------
+
+@Configuration
+public class AppConfig{
+  @Bean
+  public Person person(){
+    return new Person(address());
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+------------------------------------------------------
+	Spring Framework Stereotype  ANNOTAITONS (class level annotations)
+------------------------------------------------------
+-------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+
+
+
+-----------------------------------------
+	@Component - marks the beans as Spring's managed components. Spring only pick up and registers beans with @Component.
+-----------------------------------------
+
+@Component
+public @interface Service {
+}
+
+@Component
+public @interface Repository {
+}
+
+-----------------------------------------
+	@Service  - is a special cases of @Component, to indicate that it's holding the business logic.
+-----------------------------------------
+
+
+-----------------------------------------
+	@Repository - is a special cases of @Component, at the persistence layer, which will act as a database repository
+-----------------------------------------
+
+
+-----------------------------------------
+	@Controller - used to identify controllers for Spring MVC or Spring WebFlux.
+-----------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+------------------------------------------------------
+	Spring Boot  ANNOTAITONS (class level annotations)
+------------------------------------------------------
+-------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+
+-----------------------------------------
+	@EnableAutoConfiguration - is usually placed on the main application class. 
+							This annotation tells Spring Boot to start adding beans based on classpath settings, other beans, and various property settings.	
+-----------------------------------------
+
+-----------------------------------------
+	@SpringBootApplication - is used on the application class while setting up a Spring Boot project. 
+							The class that is annotated with the @SpringBootApplication must be kept in the base package
+							The one thing that the @SpringBootApplication does is a component scan. But it will scan only its sub-packages. 
+							As an example, if you put the class annotated with @SpringBootApplication in com.example then 
+							@SpringBootApplication will scan all its sub-packages, such as com.example.a, com.example.b, and com.example.a.x.	
+-----------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+------------------------------------------------------
+	Spring MVC and REST  ANNOTAITONS 
+------------------------------------------------------
+-------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+
+
+
+-----------------------------------------
+	@RequestMapping - 	is used to map web requests onto specific handler classes and handler methods. 
+						@RequestMapping on class level creates a base URI for which the controller will be used. 
+						@RequestMapping on methods it will give you the URI on which the handler methods will be executed
+						Has no default method type.
+-----------------------------------------	
+
+@Controller
+@RequestMapping("/welcome")
+public class WelcomeController{
+  @RequestMapping(method = RequestMethod.GET)  //   @RequestMapping(value="/welcome") = @RequestMapping("/welcome")
+  public String welcomeAll(){
+    return "welcome all";
+  }  
+}
+
+
+-----------------------------------------
+	@CookieValue -  used as argument of request mapping method. The HTTP cookie is bound to the @CookieValue parameter for a given cookie name. 
+					- is used in the method annotated with @RequestMapping.
+					- is used at method parameter level
+-----------------------------------------	
+
+@RequestMapping("/cookieValue")
+  public void getCookieValue(@CookieValue "JSESSIONID" String cookie){
+}
+
+
+-----------------------------------------
+	@RequestAttribute -  taken from HttpServletRequest object
+-----------------------------------------	
+
+@Override
+  public boolean preHandle (HttpServletRequest request,
+                            HttpServletResponse response,
+                            Object handler) throws Exception {
+
+      request.setAttribute("visitorCounter", counter.incrementAndGet());
+      return true;
+  }
+
+
+@RequestMapping("/")
+  @ResponseBody
+  public String handle (@RequestAttribute("visitorCounter") Integer counter) {
+      return String.format("Visitor number: %d", counter);
+  }
+
+
+
+-----------------------------------------
+	@PathVariable -  used to handle dynamic changes in the URI where certain URI value acts as a parameter.
+-----------------------------------------	
+
+
+@GetMapping("/foos/{id}")
+@ResponseBody
+public String getFooById(@PathVariable("id") String orderId) {
+    return "ID: " + id;
+}
+
+Ex:
+http://localhost:8080/foos/abc
+----
+ID: abc
+
+
+
+
+-----------------------------------------
+	@RequestParam -  extract query parameters, form parameters and even files from the request.
+					- are required by default (can be set as optional @RequestParam(required = false) String id)
+					- if is required and not present in URL then "400 Bad Request" is thrown.
+					- @RequestParam(defaultValue = "test") String id (still required = true , but if "id" is not found in URL  => id = "test")
+-----------------------------------------
+
+@GetMapping("/api/foos")
+@ResponseBody
+public String getFoos(@RequestParam String id) {   // @RequestParam(name = "id") String fooId
+    return "ID: " + id;
+}
+ 
+Ex:
+http://localhost:8080/api/foos?id=abc
+----
+ID: abc
+
+
+
+-----------------------------------------
+	@RequestBody -  automatic deserialization of the inbound HttpRequest body onto a Java object.
+					"consumes" specify request's format 
+-----------------------------------------	
+
+    @PostMapping(value="/user", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void process2(@RequestBody User user) {
+
+        logger.info("User: {}", user);
+    }
+
+
+
+
+-----------------------------------------
+	@ResponseBody -  tells a controller that the object returned is automatically serialized into JSON and passed back into the HttpResponse object.
+-----------------------------------------	
+
+	@PostMapping("/response", produces = "application/json" )  // or produces = "application/xml"
+    @ResponseBody
+    public ResponseTransfer postResponseController( @RequestBody LoginForm loginForm) {
+        return new ResponseTransfer("Thanks For Posting!!!"); 	// will automatically be serialized into json or xml.
+     }
+
+
+
+
+-----------------------------------------
+	@SessionAttributes -  used to store the model attribute in the session.
+						  used at controller class level.
+-----------------------------------------	
+In the below code snippet, the model attribute ‘user’ will be added to the session if the name attribute of the @ModelAttribute and @SessionAttributes annotations is same.
+
+@SessionAttributes("user")
+public class LoginController {
+
+	@ModelAttribute("user")
+	public User setUpUserForm() {
+		return new User();
+	}
+}
+
+
+
+
+-----------------------------------------
+	@SessionAttribute -  used to bind the method parameter to a session attribute. 
+						 provides a convenient access to the existing or permanent session attributes.
+-----------------------------------------	
+@GetMapping("/info")
+public String userInfo(@SessionAttribute("user") User user) {
+	//...
+	//...
+	return "user";
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+------------------------------------------------------
+	Spring Framework DataAccess  ANNOTAITONS 
+------------------------------------------------------
+-------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+
+
+-----------------------------------------
+	@Transactional -  used to bind the method parameter to a session attribute. 
+						 provides a convenient access to the existing or permanent session attributes.
+-----------------------------------------	
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+------------------------------------------------------
+	Task Execution and Scheduling  ANNOTAITONS 
+------------------------------------------------------
+-------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+
+
+-----------------------------------------
+	@Scheduled -  used to bind the method parameter to a session attribute. 
+				  provides a convenient access to the existing or permanent session attributes.
+-----------------------------------------	
+1. In this case, the duration between the end of last execution and the start of next execution is fixed. 
+The tasks always wait until the previous one is finished.
+@Scheduled(fixedDelay=5000)
+public void doSomething() {
+  // something that should execute periodically   
+}
+
+
+2. In this case, the beginning of the task execution does not wait for the completion of the previous execution.
+@Scheduled(fixedRate=5000)
+public void doSomething() { 
+  // something that should execute periodically 
+}
+
+
+3. The task gets executed initially with a delay and then continues with the specified fixed rate.
+@Scheduled(initialDelay=1000,fixedRate=5000)
+public void doSomething() { 
+ // something that should execute periodically after an initial delay  
+}
+
+
+
+-----------------------------------------
+	@Async -  	-used on methods to execute each method in a separate thread. 
+				-it must be applied to public methods only
+				-calling the async method from within the same class won't work
+			  	-methods with return value must have a Future typed return values.
+-----------------------------------------	
+@Async
+public Future<String> asyncMethodWithReturnType() {    // future return type
+    System.out.println("Execute method asynchronously - "
+      + Thread.currentThread().getName());
+    try {
+        Thread.sleep(5000);
+        return new AsyncResult<String>("hello world !!!!");
+    } catch (InterruptedException e) {
+        //
+    }
+ 
+    return null;
+}

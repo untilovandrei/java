@@ -1,0 +1,269 @@
+"git add ."
+"git add <filename.ext>"
+
+
+"git reset" - removes all added files to commit (undo for "git add .")
+"git reset <filename.ext>" - removes the specified file from commit (undo for "git add <filename.ext>")
+
+------------
+Sublime is installed in "C:\\Program Files\\Sublime Text 3\\subl.exe"
+- alias 'subl="/c/Program Files/Sublime Text 3/subl.exe"'   	# set alias for program
+
+-subl <filename.ext>		# open filegit
+
+------------
+
+						# REVERT SOURCES 
+- git checkout <filename.ext> 		# revert changes on specified file
+- git checkout . 					# revert changes on all branch's sources
+- git clean -f 						# remove untracted files 
+- git clean -fd 					# remove untracted folders 
+
+						# CREATE SWITCH BRANCES 
+- git checkout -b <new_branch>		# create new branch and switches to it
+- git checkout <branch>				# switches to existing branch
+
+
+
+
+
+
+"git remote" managing the list of remote entries that are stored in the repository's ./.git/config file.
+	- git remote	:	list the remote connections you have to other repositories
+	- git remote -v	:	same as "git remote" but include the URL of each connection
+	- git remote add <remote_name> <url>		:	create a new connection to a remote repository		
+		ex	:	git remote add origin https://github.com/user/repo.git
+	- git remote rm <remote_name>	:	remove the connection to the remote repository called <remote_name>
+	- git remote rename <old-remote_name> <new-remote_name>		:	rename a remote connection 
+	- git remote set-url <remote_name> <url>		:	update the url of existing remote
+
+
+"git fetch" downloads commits, files, and refs from a remote repository into your local repo
+		    Used to review commits before integrating them with your local repository.
+			Git isolates fetched content from existing local content
+		    Fetched content has to be explicitly checked out using the git checkout command.
+	- git fetch 	: 	fetch all of the branches from the repository
+	- git fetch remote_name branch_name
+		ex :	git fetch origin master	     (#extract changes from remote)
+				git checkout origin/master   (#downloads the fetched sources from "origin/master").
+				git merge origin/master 	|| 		git rebase origin/master
+	- git fetch --all	:	fetches all registered remotes and their branches
+
+
+"git pull" downloads the remote content for the active local branch and immediately execute git merge for the new remote content. (git fetch + git merge)
+	- git pull <remote_name>	:	will create a single new local commit containing the content of new diverged remote commits (A--B--C).
+			git pull <remote_name>  =  	git fetch <remote_name> <remote_branch>
+										git merge origin/<branch_name>. (current_branch)
+
+	- git pull --rebase		:	copies the remote commits A--B--C and appended them to the local lsmaster commit history.
+			can be set as default pull option by "git config --global branch.autosetuprebase always"
+	- git pull --no-commit <remote_name> 	:	fetches the remote content but does not create a new merge commit.
+	- git pull --verbose 	:	output during a pull which displays the content being downloaded and the merge details.
+
+
+sychronize sources  by merge
+	git checkout master
+	git pull origin
+sychronize sources  by rebase
+	git checkout master
+	git pull --rebase origin
+
+"git merge" copies the remote sequence of commits A--B--C to local branch by a single commit
+"git rebase" copies the sequence of commits A--B--C to local branch ,used to ensure a linear history by commits.
+
+
+
+"git diff <branch_1> <remote_name>/<branch_2>"		# prints out the list of differences between files.
+"git diff --check"
+
+
+
+
+				# REVERT TO LAST COMMIT
+# This will destroy any local modifications.
+# Don't do it if you have uncommitted work you want to keep.
+git reset --hard 0d1d7fc32
+
+# Alternatively, if there's work to keep:
+git stash
+git reset --hard 0d1d7fc32
+git stash pop
+# This saves the modifications, then reapplies that patch after resetting.
+# You could get merge conflicts, if you've modified things which were
+# changed since the commit you reset to.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------
+												
+
+														# SAVE CHANGES WHICH ARE NOT READY FOR COMMIT
+- "git stash"		# takes your uncommitted changes (both staged and unstaged), saves them away for later use, and then reverts them from your working copy
+					# STASH is applied to :
+					    -changes that have been added to your index (staged changes)
+					    -changes made to files that are currently tracked by Git (unstaged changes)
+					# STASH is NOT applied to :
+						-new files in your working copy that have not yet been staged
+						-files that have been ignored
+- "git stash save "message""  	# same as "git stash" but provide a comment ("message")
+- "git stash list"  # outputs the list of saved stashes 
+- "git stash pop"	# removes the changes from your stash and reapplies the most recently created to your working copy
+- "git stash pop stash@{2}" # applies the specified stash to your working copy
+- "git stash apply"	# same as "git stash pop" but keeps changes in your stash 
+
+
+
+
+														# COMMIT OPTIONS 
+- "git commit --amend" 		# modifies the last commit instead of creating a new commit 
+								# command opens file to edit commit message (empty message aborts commit)
+- "git commit -a"  			# commit changes : opens file to insert commit message and review commited changes 
+
+
+
+
+														# CHECK CHANGES 
+- "git diff" - 				# compare HEAD to corresponding remote branch
+								@@ -34,6 +34,8 @@
+								In this header example, 6 lines have been extracted starting from line number 34. Additionally, 8 lines have been added starting at line number 34.
+- "git diff <branch1> <branch2>" 	# compare whole content of <branch1> and <branch2>
+- "git diff <branch1> <branch2> path/of/file"	# compare the contetnt of specified file within both branches
+
+
+
+
+- "git reflog" 			#  history of checkout operations
+
+
+						# UNDO STRATEGIES
+#1 COMMITED 
+- "git checkout <commit_id>" 	# download sources as working directory match the exact state of the <commit_id> commit , without affected the current state of 
+										branch , as HEAD points not to branch , but an exact commit (detached HEAD);
+								example : "git checkout a1e8fb5";
+								to return to current state of branch (undo downloaded changes, use "git checkout <branch>");
+
+- "git checkout -b new_branch_with_working_project" - being in a "detached HEAD", which points to a specific commit, this will create a new branch contaning the
+								sources at <commit_id> version of project , as the last commit on this newly created branch is the specified <commit_id>;
+								the usage of "git checkout <commit_id>" -b option tells Git to run git branch <new-branch> before running 
+								"git checkout <new-branch>"
+
+
+#2 COMMITED
+- "git revert HEAD" 				# reverts to last commit (opens a text file witch allows editting of commit message) locally.
+										Creates a new commit in order to save commit history!!! 
+
+#3 COMMITED
+- "git reset --hard <commit_id>"	# reset to that specified commit. 
+										All existing commits after <commit_id> will not exist anymore.
+
+#4 COMMITED
+- "git add .
+   git commit --amend"				# edits the last commit , being able to add additional sources and edit commit message
+
+#5 UNCOMMITED
+- "git reset"  	#unstage all files; update trees (Working Directory , Staging Index , Commit History)
+- "git reset HEAD~2" # update "Commit History" and "Staging Index" with 2 commits before commit to which points HEAD.
+- "git reset --soft HEAD || <commit_id>" 	# updates "Commit History" to specified <commit_id>
+- "git reset --mixed HEAD || <commit_id>"	# updates both trees : "Commit History" and "Staging Index" to specified <commit_id>
+												Changes that have been undone from the Staging Index are moved to the Working Directory
+- "git reset --hard HEAD || <commit_id>"	# update all three trees : "Commit History", "Staging Index" and "Working Directory"  
+
+- "git reset <file>" - unstage a file 
+
+
+
+
+- "git clean" 		# removes untracked files
+- "git clean -n" 	# print files which whould be removed (read only on  untracked files)
+- "git clean -f"	# removes all untracked files (skips directories)
+- "git clean -d"	# removes all files and directories.
+- "git clean -x"	# force removal of ignored files.
+- "git clean -xf"	# removes all files from current directory ( ignored files too ).
+
+
+
+- "git rm" 			# remove tracked files from the Git index
+
+
+- "git rebase <base>"		#rebases the current branch onto <base>
+- "git rebase -i <base>"    #same as rebase, but allows to edit commits
+							Commands:
+							# p, pick = use commit
+							# r, reword = use commit, but edit the commit message
+							# e, edit = use commit, but stop for amending
+							# s, squash = use commit, but meld into previous commit
+							# f, fixup = like "squash", but discard this commit's log message
+							# x, exec = run command (the rest of the line) using shell
+							# d, drop = remove commit
+
+
+"git remote" managing the list of remote entries that are stored in the repository's ./.git/config file.
+	- git remote	:	list the remote connections you have to other repositories
+	- git remote -v	:	same as "git remote" but include the URL of each connection
+	- git remote add <remote_name> <url>		:	create a new connection to a remote repository		
+		ex	:	git remote add origin https://github.com/user/repo.git
+	- git remote rm <remote_name>	:	remove the connection to the remote repository called <remote_name>
+	- git remote rename <old-remote_name> <new-remote_name>		:	rename a remote connection 
+	- git remote set-url <remote_name> <url>		:	update the url of existing remote
+
+
+"git fetch" downloads commits, files, and refs from a remote repository into your local repo
+		    Used to review commits before integrating them with your local repository.
+			Git isolates fetched content from existing local content
+		    Fetched content has to be explicitly checked out using the git checkout command.
+	- git fetch 	: 	fetch all of the branches from the repository
+	- git fetch remote_name branch_name
+		ex :	git fetch origin master	     (#extract changes from remote)
+				git checkout origin/master   (#downloads the fetched sources from "origin/master").
+				git merge origin/master 	|| 		git rebase origin/master
+	- git fetch --all	:	fetches all registered remotes and their branches
+
+
+
+"git pull" downloads the remote content for the active local branch and immediately execute git merge for the new remote content. (git fetch + git merge)
+	- git pull <remote_name>	:	will create a single new local commit containing the content of new diverged remote commits (A--B--C).
+			git pull <remote_name>  =  	git fetch <remote_name> <remote_branch>
+										git merge origin/<branch_name>. (current_branch)
+
+	- git pull --rebase		:	copies the remote commits A--B--C and appended them to the local lsmaster commit history.
+			can be set as default pull option by "git config --global branch.autosetuprebase always"
+	- git pull --no-commit <remote_name> 	:	fetches the remote content but does not create a new merge commit.
+	- git pull --verbose 	:	output during a pull which displays the content being downloaded and the merge details.
+
+
+
+- "git push" 		# add commit to remote repository
+	Options:
+		"--all" 	# push all local repos to remote
+		"--tags"	# push all tags
+		"--force"	# replaces the content of remote branch with local one
+
+
+- "PULL Request" -mechanism for a developer to notify team members that they have completed a feature.
+				Contains 4 pieces of information to file a pull request: 
+						1. source repository, 
+						2. source branch, 
+						3. destination repository, 
+						4. destination branch.
+
+ "git merge" will combine multiple sequences of commits into one unified history.
+- "git merge <branch name>" where <branch name> is the name of the branch that will be merged into the receiving branch."
+ Merge types: 
+ 	1. fast-forward merge  		# occur when there is a linear path from the current branch tip to the target branch. 
+ 								Actually, Git has to integrate the histories from current branch to the target branch tip.
+ 	2. 3-way Merge 				# occurs when master branch progresses while the merged branch is in-progress .
+ 								(when several developers are working on a project simultaneously.)
