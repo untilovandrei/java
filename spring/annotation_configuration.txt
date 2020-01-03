@@ -1,0 +1,77 @@
+----------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+------------------------------------------------------
+	Configuration class - tha class which contains the declaration of Java beans
+------------------------------------------------------
+-------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+
+package com.tutorialspoint;
+import org.springframework.context.annotation.*;
+
+@Configuration
+public class HelloWorldConfig {
+   @Bean 
+   @Scope("prototype")    //  default value is @Scope("singleton")
+   public HelloWorld helloWorld(){
+      return new HelloWorld();
+   }
+}
+
+1. by default , method Annotated with "@Bean" -  method name is used as bean id (in this case id = "helloWorld")
+2. to specify the bean name use :
+	@Bean("helloWorld")
+
+----------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+------------------------------------------------------
+	Bean class - tha class which describes an entity
+------------------------------------------------------
+-------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+
+
+package com.tutorialspoint;
+
+public class HelloWorld {
+   private String message;
+
+   public void setMessage(String message){
+      this.message  = message;
+   }
+   public void getMessage(){
+      System.out.println("Your Message : " + message);
+   }
+}
+
+
+
+----------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+------------------------------------------------------
+	Launcher class - tha class which initializes beans
+------------------------------------------------------
+-------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+
+
+public class MainApp {
+   public static void main(String[] args) {
+
+      ApplicationContext ctx = new AnnotationConfigApplicationContext(HelloWorldConfig.class);
+   
+      HelloWorld helloWorld = ctx.getBean(HelloWorld.class);  
+      helloWorld.setMessage("Hello World!");
+      helloWorld.getMessage();
+   }
+}
+
+1.	It is allowed to add new config classes to ApplicationContext
+
+	ctx.register(AppConfig.class, OtherConfig.class);
+   	ctx.register(AdditionalConfig.class);
+   	ctx.refresh();
+
+2.	HelloWorld helloWorld = ctx.getBean(HelloWorld.class);    ==    HelloWorld helloWorld = ctx.getBean("helloWorld"); // get bean by id
+
+
