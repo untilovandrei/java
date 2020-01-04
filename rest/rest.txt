@@ -1,0 +1,122 @@
+HTTP Methods
+
+	safe method - requests do not change the state of the resource
+	idempotent method - multiple identical requests must produce the same result every time until another API has changed the state.
+
+
+
+	HTTP GET
+		purpose:
+			-retrieve resource representation/information only – and not to modify it in any way
+		properties:
+			-safe 
+			-idempotent 
+			-Request doesn't have body
+			-Successful response has body
+			-Cacheable
+		response statuses:
+			-resouce found = return HTTP response code 200 (OK)
+			-resource not found = return HTTP response code 404 (NOT FOUND)
+			-request is not correctly formed = return HTTP response code 400 (BAD REQUEST)
+
+	HTTP POST
+		purpose:
+			-create new subordinate resources
+		properties:
+			-not safe (creates new resource)
+			-not idempotent (identical POST requests result in different resources containing the same information (except resource ids).
+			-Request has body
+			-Successful response has body
+			-not cacheable, unless the response includes "Cache-Control" or "Expires" header fields.
+		responses statuses:
+			-resource has been created on server = return HTTP response code 201 (Created)
+			-the action doesn't result in a resource = return HTTP response code 200 (OK) or 204 (No Content)
+
+	HTTP PUT
+		purpose:
+			-update/replace existing resource (if the resource does not exist, then API may decide to create a new resource or not)
+		properties:
+			-not safe (update resource)
+			-idempotent
+			-not cacheable
+			-Request has body
+			-Successful response has body
+			-not Cacheable
+		responses statuses:
+			-resource has been created on server  = return HTTP response code 201 (Created)
+			-resource has been modified on server = return HTTP response code 200 (OK) or 204 (No Content)
+
+	POST vs PUT 
+	POST requests are made on resource collections, whereas PUT requests are made on an individual resource.
+
+	HTTP DELETE
+		purpose:
+			-delete resources (identified by the Request-URI)
+		properties:
+			-not safe (deletes resources)
+			-idempotent (repeatedly calling DELETE API on that resource will not change the data on server buy will return a 404 (NOT FOUND)
+			-Request may have body
+			-Successful response may have body
+			-not cacheable
+		responses statuses:
+			-resource deleted and the response includes an entity describing the status = response code 200 (OK)
+			-action has been queued = response code 202 (Accepted) 
+			-resource deleted but and no further information is to be supplied = response code 204 (No Content)
+			
+	HTTP PATCH
+		purpose:
+			-to make partial update/modify on a resource (PUT replaces the resources entity / PATCH modifies resource)
+		properties:
+			-not safe 
+			-not idempotent
+			-Request has body
+			-Successful response has body
+			-not cacheable
+		responses statuses:
+			-resource updated = response code 200 (OK)
+			-action has been queued = response code 202 (Accepted) or 
+			-resource updated but the response does not include an entity = response code 204 (No Content)
+
+	HTTP HEAD
+		purpose:
+			-verifies if a resource is available (is almost identical to GET, except without the response body)
+		properties:
+			-safe 
+			-idempotent	
+			-Request doesn't have body
+			-Successful response has nobody
+			-Cacheable
+		responses statuses:
+			-resouce available = return HTTP response code 200 (OK)
+			
+	HTTP CONNECT
+		purpose:
+			-starts two-way communications with the requested resource
+		properties:
+			-not safe 
+			-not idempotent	
+			-Request doesn't have body
+			-Successful response has nobody
+			-not cacheable
+		responses statuses:
+			-resouce available = return HTTP response code 200 (OK)
+
+	HTTP OPTIONS
+		purpose:
+			-is used to describe the communication options for the target resource
+		properties:
+			-safe 
+			-idempotent	
+			-Request doesn't have body
+			-Successful response has body
+			-not cacheable
+
+	HTTP TRACE
+		purpose:
+			-performs a message loop-back test along the path to the target resource, providing a useful debugging mechanism.
+		properties:
+			-not safe 
+			-idempotent	
+			-Request doesn't have body
+			-Successful response doesn't have body
+			-not cacheable
