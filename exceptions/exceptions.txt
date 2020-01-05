@@ -5,24 +5,54 @@
 ------------------------------------------------------
 -------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------
-										
-										Object
-										  |
-										  |
-										  |
-									   Throwable
-									   	  |
-							  ____________|_____________________
-							 |						   			|
-							 |						   			|	
-							 |						   			|
-							 |						   			|
-						 Exception		   	  		 		  Error
-							 |						   			|
-					  _______|_______				  __________|__________
-					 |				|				 | 					   |
-					 |				|				 |					   |
-					 |				|				 |					   |
-				Chcecked		  Unchecked		  Virtual				Assertion 
-				Exceptions	 	  Exceptions	  Machine				  Error
-												   Error
+
+try 	- used to specify a block where we should place exception code. 
+	  		- the try block must be followed by either catch or finally. We can't use try block alone.
+
+catch 	- used to handle the exception. We can't use catch block alone. 
+			- It must be preceded by try block. 
+			- It can be followed by finally block later.
+
+finally - used to execute the important code of the program. 
+			- It is executed whether an exception is handled or not.
+
+throw	- used to throw an exception.
+
+throws 	- used to declare exceptions. 
+			- It doesn't throw an exception. 
+			- It specifies that there may occur an exception in the method. 
+			- It is always used with method signature.
+
+
+------------------------------------------------------
+	Try-with-resources block
+------------------------------------------------------
+
+try (Scanner scanner = new Scanner(new File("test.txt"))) 
+{
+    while (scanner.hasNext()) {
+        System.out.println(scanner.nextLine());
+    }
+} catch (FileNotFoundException fnfe) {
+    fnfe.printStackTrace();
+}
+
+//If the try block will be executed, the "Scanner" object will automatically be closed inside finally block.
+finally {
+    if (scanner != null) {
+        scanner.close();
+    }
+}
+
+------------------------------------------------------
+	Custom resource
+------------------------------------------------------
+
+To construct a custom resource that will be correctly handled by a try-with-resources block, the class should implement the Closeable or AutoCloseable interfaces, and override the close method:
+
+public class MyResource implements AutoCloseable {
+    @Override
+    public void close() throws Exception {
+        System.out.println("Closed MyResource");
+    }
+}
