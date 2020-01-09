@@ -230,6 +230,8 @@ git stash pop
 		ex :	git fetch origin master	     (#extract changes from remote)
 				git checkout origin/master   (#downloads the fetched sources from "origin/master").
 				git merge origin/master 	|| 		git rebase origin/master
+				!!! If the merge is fast-forward => commit history will be coppied (bevavior is same as at rebase)
+					In this case git rebase is not allowed.
 	- git fetch --all	:	fetches all registered remotes and their branches
 
 
