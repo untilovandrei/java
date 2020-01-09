@@ -171,7 +171,7 @@ git stash pop
 - "git reset --hard <commit_id>"	# reset to that specified commit. 
 										All existing commits after <commit_id> will not exist anymore.
 
-#4 COMMITED
+#4 COMMITED 
 - "git add .
    git commit --amend"				# edits the last commit , being able to add additional sources and edit commit message
 
@@ -184,6 +184,8 @@ git stash pop
 - "git reset --hard HEAD || <commit_id>"	# update all three trees : "Commit History", "Staging Index" and "Working Directory"  
 
 - "git reset <file>" - unstage a file 
+- "git reset ." -unstage all staged files
+- "git restore ." -removes all unstaged changes from Working Directory.
 
 
 
