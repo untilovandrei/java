@@ -19,7 +19,7 @@ Sublime is installed in "C:\\Program Files\\Sublime Text 3\\subl.exe"
 - git clean -f 						# remove untracted files 
 - git clean -fd 					# remove untracted folders 
 
-						# CREATE SWITCH BRANCES 
+						# CREATE SWITCH BRANCHES 
 - git checkout -b <new_branch>		# create new branch and switches to it
 - git checkout <branch>				# switches to existing branch
 
@@ -142,6 +142,7 @@ git stash pop
 								In this header example, 6 lines have been extracted starting from line number 34. Additionally, 8 lines have been added starting at line number 34.
 - "git diff <branch1> <branch2>" 	# compare whole content of <branch1> and <branch2>
 - "git diff <branch1> <branch2> path/of/file"	# compare the contetnt of specified file within both branches
+- "git diff <branch>"		# compare Working Directory with <branch>
 
 
 
