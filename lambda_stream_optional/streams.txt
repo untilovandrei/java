@@ -1,0 +1,197 @@
+--------------------------------------------
+------------------------------
+------------------
+Stream
+------------------
+------------------------------
+--------------------------------------------
+
+Stream - a sequence of elements and supports different kind of operations to perform computations upon those elements
+
+Stream operations are :
+	- intermediate  (return a stream so we can chain multiple intermediate operations without using semicolons)  = filter, map, sorted...
+	- terminal		(are void or return a non-stream result) = forEach...
+
+Example: 
+	List<String> myList =
+    Arrays.asList("a1", "a2", "b1", "c2", "c1");
+
+myList
+    .stream()
+    .filter(s -> s.startsWith("c"))
+    .map(String::toUpperCase)
+    .sorted()
+    .forEach(System.out::println);
+
+// C1
+// C2
+
+
+
+
+	!!!  Lists and Sets support new methods stream() and parallelStream()  !!!
+
+------------------------------
+------------------
+Types of Stream
+------------------
+------------------------------
+
+Stream 1:
+		Arrays.asList("a1", "a2", "a3")
+		    .stream()
+		    .findFirst()
+		    .ifPresent(System.out::println);  // a1
+
+Stream 2:
+		Stream.of("a1", "a2", "a3")
+		    .findFirst()
+		    .ifPresent(System.out::println);  // a1
+
+		Initialize a stream :
+			-	Stream.of() => 	creates a stream from a bunch of object references.
+			-	.stream()	=>	returns a regular object stream from collection.
+
+
+Stream 3:
+		IntStreams  - can replace the regular for-loop utilizing IntStream.range():
+			!!! same for LongStream , DoubleStream ...
+
+		IntStream.range(1, 4)
+    		.forEach(System.out::println);
+
+
+Stream 4: (Object stream -> primitive stream)
+		Stream.of("a1", "a2", "a3")
+		    .map(s -> s.substring(1))
+		    .mapToInt(Integer::parseInt)   // transform "int" to Integer
+ 		    .max()
+		    .ifPresent(System.out::println);  // 3
+
+	!!! analogic for mapToInt(), mapToLong() and mapToDouble.
+
+
+Stream 5: (primitive stream -> Object stream)
+
+
+
+------------------------------
+------------------
+Processing Order
+------------------
+------------------------------
+
+!!! Every stream MUST end into a TERMINAL operation.
+
+	Stream.of("d2", "a2", "b1", "b3", "c")
+    .filter(s -> {								// as "filter" is an intermediate operation , NOTHING will be printed.
+        System.out.println("filter: " + s);
+        return true;
+    });
+
+
+    Stream.of("d2", "a2", "b1", "b3", "c")		// in this case  will be printed both by "filter" and by "forEach".
+    .filter(s -> {
+        System.out.println("filter: " + s);
+        return true;
+    })
+    .forEach(s -> System.out.println("forEach: " + s));
+
+
+Output :
+	filter:  d2
+	forEach: d2
+	filter:  a2
+	forEach: a2
+	filter:  b1
+	forEach: b1
+	filter:  b3
+	forEach: b3
+	filter:  c
+	forEach: c
+
+
+
+
+
+------------------------------
+------------------
+    Operations :
+------------------
+------------------------------
+
+
+-----------------------------------
+	Terminal operations
+-----------------------------------
+
+- anyMatch() - Terminal operation; 
+			- Purpose : evaluate condition for every element till first "true" value. 
+ 			- Param   : Object
+ 			- Return  : boolean 
+
+	   .anyMatch(s -> {								  
+	        System.out.println("anyMatch: " + s);
+	        return s.startsWith("A");
+	    });
+
+
+
+- forEach	- Terminal operation;
+			- Purpose : performs same operation on each element
+			- Param : Object
+ 			- Return: void
+
+		.forEach(s -> System.out.println("forEach: " + s));
+
+
+
+
+
+
+
+
+-----------------------------------
+	Intermediate operations
+-----------------------------------
+
+
+
+- filter() - Intermediate operation;
+			- Purpose : if return false -> eliminates the element
+			- Param : Object
+ 			- Return: boolean
+
+ 		.filter(s -> {
+	        System.out.println("filter: " + s);
+	        return s.startsWith("A");
+    	});
+
+
+- map()		- Intermediate operation;
+			- Purpose : replaces initial value from collection with return value 
+			- Param : Object
+ 			- Return: Object
+
+		.map(s -> {
+	        System.out.println("map: " + s);
+	        return s.toUpperCase();
+	    })
+
+
+- sorted()	- Intermediate operation; is execute horizontally (for all collection's elements then pass to next method)
+			- Purpose : sort pair or elements 
+			- Params : Object, Object
+			- Return: boolean
+
+	    .sorted((s1, s2) -> {
+	        System.out.printf("sort: %s; %s\n", s1, s2);
+	        return s1.compareTo(s2);
+	    })
+
+
+------------------------------
+------------------
+    Reusing Streams :
+------------------
+------------------------------
