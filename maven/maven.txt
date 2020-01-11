@@ -11,7 +11,10 @@ There are three built-in build lifecycles:
 	- clean 
 	- site
 
-Lifecycle consists of phases
+-Lifecycle consists of multiple phases;
+-Phase consists of multiple goals.
+
+
 
 
 --------------------------------------------------------------------------------------------------------------------
@@ -47,5 +50,55 @@ Default "build lifecycle" phases
 
 
 
+
+
+------------------------------------
+----------------------
+	Maven plugin
+----------------------
+------------------------------------
+
+-A Maven plugin is a group of goals
+
+<build>
+    <plugins>
+        <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <version>${maven.failsafe.version}</version>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>integration-test</goal>
+                        <goal>verify</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+
+As we can see, the Failsafe plugin has two main goals configured here:
+
+-	integration-test: run integration tests
+-	verify: verify all integration tests passed
+
+
+
+
+
+-------------------------------------
+---------------
+Building a Maven Project
+---------------
+-------------------------------------
+
+	- mvn deploy 			: This will execute the entire default lifecycle
+	- mvn install 			: Alternatively, we can stop at the install phase
+	- mvn clean install 	: Clean the project first – by running the clean lifecycle – before the new build.
+	- mvn compiler:compile 	: Run specific goal
+
+
+
+Dependency management
 
 https://www.baeldung.com/maven-goals-phases
