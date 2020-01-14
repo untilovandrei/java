@@ -76,8 +76,6 @@ public class JUnit5TestSuiteExample
 {
 }
 
--------------------------------------------------------------------------------------
-
 
 @RunWith(JUnitPlatform.class)
 @SelectPackages("com.howtodoinjava.junit5.examples")
