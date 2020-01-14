@@ -1,0 +1,115 @@
+https://www.vogella.com/tutorials/JUnit/article.html
+https://www.baeldung.com/junit
+
+
+--------------------------------------------------------------------------------------------------
+------------------------------------------------------------
+-----------------------------------
+			JUnit 5
+-----------------------------------
+------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
+
+
+Maven Dependency 
+
+	<dependency>
+	    <groupId>org.junit.jupiter</groupId>
+	    <artifactId>junit-jupiter-engine</artifactId>
+	    <version>5.1.0</version>
+	    <scope>test</scope>
+	</dependency>
+
+
+
+New JUnit 5 annotations in comparison to JUnit 4 : 
+	@TestFactory – denotes a method that is a test factory for dynamic tests
+	@DisplayName – defines custom display name for a test class or a test method
+	@Nested – denotes that the annotated class is a nested, non-static test class
+	@Tag – declares tags for filtering tests
+	@ExtendWith – it is used to register custom extensions
+	@BeforeEach – denotes that the annotated method will be executed before each test method (previously @Before)
+	@AfterEach – denotes that the annotated method will be executed after each test method (previously @After)
+	@BeforeAll – denotes that the annotated method will be executed before all test methods in the current class (previously @BeforeClass)
+	@AfterAll – denotes that the annotated method will be executed after all test methods in the current class (previously @AfterClass)
+	@Disable – it is used to disable a test class or method (previously @Ignore)
+
+
+
+
+
+
+
+JUnit 5 Suits
+
+@RunWith(JUnitPlatform.class)
+@SelectPackages("com.howtodoinjava.junit5.examples.packageA") 
+public class JUnit5TestSuiteExample 
+{
+}
+
+@SelectPackages({"com.howtodoinjava.junit5.examples.packageA","com.howtodoinjava.junit5.examples.packageB"}) 
+public class JUnit5TestSuiteExample 
+{
+}
+
+-------------------------------------------------------------------------------------
+
+@RunWith(JUnitPlatform.class)
+@SelectClasses( ClassATest.class )
+public class JUnit5TestSuiteExample 
+{
+}
+
+@RunWith(JUnitPlatform.class)
+@SelectClasses( { ClassATest.class, ClassBTest.class, ClassCTest.class } )
+public class JUnit5TestSuiteExample 
+{
+}
+
+-------------------------------------------------------------------------------------
+
+@RunWith(JUnitPlatform.class)
+@SelectPackages("com.howtodoinjava.junit5.examples")
+@IncludePackages("com.howtodoinjava.junit5.examples.packageC")
+public class JUnit5TestSuiteExample 
+{
+}
+
+-------------------------------------------------------------------------------------
+
+
+@RunWith(JUnitPlatform.class)
+@SelectPackages("com.howtodoinjava.junit5.examples")
+@ExcludePackages("com.howtodoinjava.junit5.examples.packageC")
+public class JUnit5TestSuiteExample 
+{
+}
+
+
+-------------------------------------------------------------------------------------
+
+This test suite will run all tests tagged with production inside package com.howtodoinjava.junit5.examples
+@RunWith(JUnitPlatform.class)
+@SelectPackages("com.howtodoinjava.junit5.examples")
+@IncludeTags("production")
+public class JUnit5TestSuiteExample 
+{
+}
+
+
+This test suite will exclude all tests tagged with development inside package com.howtodoinjava.junit5.examples
+	@RunWith(JUnitPlatform.class)
+	@SelectPackages("com.howtodoinjava.junit5.examples")
+	@ExcludeTags("development")
+	public class JUnit5TestSuiteExample 
+	{
+	}
+
+ 	@Tag("development")
+    @Test
+    void testCalcOne()
+    {
+        System.out.println("======TEST ONE EXECUTED=======");
+        Assertions.assertEquals( 4 , Calculator.add(2, 2));
+    }
