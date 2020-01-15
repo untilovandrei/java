@@ -3,4 +3,4 @@ equals(Object obj): a method provided by java.lang.Object that indicates whether
 hashcode(): a method provided by java.lang.Object that returns an integer representation of the object memory address. By default, this method returns a random integer that is unique for each instance. This integer might change between several executions of the application and won't stay the same.
 
 
-hashcode(obj1) = hashcode(obj2) 	 =>		obj1.equals(obj2) = true 				 
+equals consistency: objects that are equal to each other 	=>	 must return the same hashCode			 

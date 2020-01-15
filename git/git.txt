@@ -184,7 +184,7 @@ git stash pop
 - "git reset --hard HEAD || <commit_id>"	# update all three trees : "Commit History", "Staging Index" and "Working Directory"  
 
 - "git reset <file>" - unstage a file 
-- "git reset ." -unstage all staged files
+- "git reset" -unstage all staged files
 - "git restore ." -removes all unstaged changes from Working Directory.
 
 
