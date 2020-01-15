@@ -115,6 +115,6 @@ orElseGet wins !!!
 
 -- extract string by flatMap (extracts string wrapped into Optional from a Optional<Object>)
 		String name = personOptional
-  						.flatMap(Person::getName)
+  						.flatMap(Person::getName) //returns Optional<String>
       					.orElse("");
 

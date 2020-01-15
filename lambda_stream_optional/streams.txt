@@ -36,6 +36,9 @@ myList
 Types of Stream
 ------------------
 ------------------------------
+Initialize a stream :
+	-	Stream.of() => 	creates a stream from a bunch of object references.
+	-	.stream()	=>	returns a regular object stream from collection.
 
 Stream 1:
 		Arrays.asList("a1", "a2", "a3")
@@ -43,18 +46,15 @@ Stream 1:
 		    .findFirst()
 		    .ifPresent(System.out::println);  // a1
 
+
 Stream 2:
 		Stream.of("a1", "a2", "a3")
 		    .findFirst()
 		    .ifPresent(System.out::println);  // a1
 
-		Initialize a stream :
-			-	Stream.of() => 	creates a stream from a bunch of object references.
-			-	.stream()	=>	returns a regular object stream from collection.
-
 
 Stream 3:
-		IntStreams  - can replace the regular for-loop utilizing IntStream.range():
+		IntStream  - can replace the regular for-loop utilizing IntStream.range():
 			!!! same for LongStream , DoubleStream ...
 
 		IntStream.range(1, 4)
@@ -73,7 +73,8 @@ Stream 4: (Object stream -> primitive stream)
 
 Stream 5: (primitive stream -> Object stream)
 
-
+		IntStream.range(1, 4)
+	    		.mapToObj(i -> new Obj(i));
 
 ------------------------------
 ------------------
@@ -189,12 +190,16 @@ Output :
 	        return s1.compareTo(s2);
 	    })
 
+	    .sorted(Comparator.naturalOrder())  -- Orders all elements ascending as follows : numbers, Capital letters, letters
 
-------------------------------
+
+
+
+-----------------------------------
 ------------------
     Reusing Streams
 ------------------
-------------------------------
+-----------------------------------
 
 !!! Java 8 streams cannot be reused. As soon as you call any terminal operation the stream is closed
 
@@ -264,9 +269,9 @@ Collectors - performs operations on stream elements and convert them to Collecti
 - averagingInt	- Param  : element of stream 
 				  Return : element required for average operation.
 
-Double averageAge = persons
-    .stream()
-    .collect(Collectors.averagingInt(p -> p.age));
+		Double averageAge = persons
+		    .stream()
+		    .collect(Collectors.averagingInt(p -> p.age));
 
 
 - summarizingInt - Purpose : provide several options on gathered data : count, sum, min, max, average
