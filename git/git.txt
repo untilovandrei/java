@@ -125,7 +125,7 @@ git stash pop
 - "git stash pop stash@{2}" # applies the specified stash to your working copy
 - "git stash apply"	# same as "git stash pop" but keeps changes in your stash 
 
-
+  
 
 
 														# COMMIT OPTIONS 
@@ -186,7 +186,7 @@ git stash pop
 - "git reset <file>" - unstage a file 
 - "git reset" -unstage all staged files
 - "git restore ." -removes all unstaged changes from Working Directory.
-
+- "git restore <file>"
 
 
 
