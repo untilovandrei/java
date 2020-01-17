@@ -73,7 +73,7 @@ public class AppConfig {
 
 	@Bean
     public Store store() {
-        return new Store(item1());
+        return new Store(item1());   	//Constructor-Based Dependency Injection
     }
 
 }
@@ -96,7 +96,7 @@ The container will call setter methods of our class, after invoking a no-argumen
 	@Bean
 	public Store store() {
 	    Store store = new Store();
-	    store.setItem(item1());
+	    store.setItem(item1());			//Setter-Based Dependency Injection
 	    return store;
 	}
 
@@ -114,7 +114,7 @@ Innjection of dependencies by marking them with an @Autowired annotation (Autowi
 
 	public class Store {
 	    @Autowired
-	    private Item item; 
+	    private Item item; 				//Field-Based Dependency Injection
 	}
 
 If there's more than one bean of the same type, we can use the @Qualifier annotation to reference a bean by name (Qualifier of "Item1" class is "item1")

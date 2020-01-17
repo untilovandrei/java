@@ -88,10 +88,15 @@ public class Student {
 				   If you use @Autowired annotation on a field, that field will be autowired with bean having matching data type.
 				   @Autowired is effectively also @Required (unless you explicitly set its parameter required to false)
 				   @Autowired can be used on private properties, but setting it above public setter.
+
+				   Autowiring using @Autowired annotation using different modes which are:
+				   	- property
+					- setter 
+					- constructor 
 -----------------------------------------
 public class Store {
      
-    @Autowired
+    @Autowired  		// additionaly can be set @Autowired(required = false) - in case no bean is found, is not thrown BeanInitializationException.
     public Item item;
 }
 
@@ -100,6 +105,7 @@ public class Store {
 -----------------------------------------
 	@ComponentScan	 - it is used  with @Configuration annotation to allow Spring to know the packages to scan for annotated components
 					   used to specify base packages using "basePackageClasses" or "basePackage" attributes to scan
+					   - @ComponentScan without arguments tells Spring to scan the current package and all of its sub-packages.
 -----------------------------------------
 "basePackageClasses" is used to specify a class which is not included in "basePackages"
 
@@ -185,6 +191,9 @@ public @interface Service {
 public @interface Repository {
 }
 
+@Component
+public @interface Controller {
+}
 -----------------------------------------
 	@Service  - is a special cases of @Component, to indicate that it's holding the business logic.
 -----------------------------------------
@@ -231,6 +240,9 @@ public @interface Repository {
 							The one thing that the @SpringBootApplication does is a component scan. But it will scan only its sub-packages. 
 							As an example, if you put the class annotated with @SpringBootApplication in com.example then 
 							@SpringBootApplication will scan all its sub-packages, such as com.example.a, com.example.b, and com.example.a.x.	
+
+							@SpringBootApplication           (same as above but it's specified the package to scan.)
+      						@ComponentScan(basePackages = "com.baeldung.componentscan.springbootapp.animals") 
 -----------------------------------------
 
 
