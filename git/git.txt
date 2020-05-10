@@ -151,13 +151,13 @@ git stash pop
 
 						# UNDO STRATEGIES
 #1 COMMITED 
-- "git checkout <commit_id>" 	# download sources as working directory match the exact state of the <commit_id> commit , without affected the current state of 
-										branch , as HEAD points not to branch , but an exact commit (detached HEAD);
+- "git checkout <commit_id>" 	# download sources as working directory match the exact state of the <commit_id> commit , without affected the 
+								current state of branch , as HEAD points not to branch , but an exact commit (detached HEAD);
 								example : "git checkout a1e8fb5";
 								to return to current state of branch (undo downloaded changes, use "git checkout <branch>");
 
-- "git checkout -b new_branch_with_working_project" - being in a "detached HEAD", which points to a specific commit, this will create a new branch contaning the
-								sources at <commit_id> version of project , as the last commit on this newly created branch is the specified <commit_id>;
+- "git checkout -b new_branch_with_working_project" - being in a "detached HEAD", which points to a specific commit, this will create a new 
+								branch contaning the sources at <commit_id> version of project , as the last commit on this newly created branch is the specified <commit_id>;
 								the usage of "git checkout <commit_id>" -b option tells Git to run git branch <new-branch> before running 
 								"git checkout <new-branch>"
 
