@@ -75,3 +75,19 @@ public class MainApp {
 2.	HelloWorld helloWorld = ctx.getBean(HelloWorld.class);    ==    HelloWorld helloWorld = ctx.getBean("helloWorld"); // get bean by id
 
 
+
+------------------------------------
+------------------
+Annotation configuration
+------------------
+------------------------------------
+1.    @EnableAutoConfiguration - makes Spring Boot create many beans automatically, relying on the dependencies in pom.xml file
+
+2.    @SpringBootApplication - just a combination of three annotations:  
+               - @Configuration                 (it's a config class)
+               - @EnableAutoConfiguration       (initialize beans based on .pom dependencies)
+               - @ComponentScan                 (scans the package in which is located the class and it's subpackages).
+
+
+3     @SpringBootApplication           (same as above but it's specified the package to scan.)
+      @ComponentScan(basePackages = "com.baeldung.componentscan.springbootapp.animals") 

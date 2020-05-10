@@ -19,7 +19,7 @@ Sublime is installed in "C:\\Program Files\\Sublime Text 3\\subl.exe"
 - git clean -f 						# remove untracted files 
 - git clean -fd 					# remove untracted folders 
 
-						# CREATE SWITCH BRANCES 
+						# CREATE SWITCH BRANCHES 
 - git checkout -b <new_branch>		# create new branch and switches to it
 - git checkout <branch>				# switches to existing branch
 
@@ -125,7 +125,7 @@ git stash pop
 - "git stash pop stash@{2}" # applies the specified stash to your working copy
 - "git stash apply"	# same as "git stash pop" but keeps changes in your stash 
 
-
+  
 
 
 														# COMMIT OPTIONS 
@@ -137,16 +137,18 @@ git stash pop
 
 
 														# CHECK CHANGES 
+(use "git fetch <repository> <branch>" before this "git diff")
 - "git diff" - 				# compare HEAD to corresponding remote branch
 								@@ -34,6 +34,8 @@
 								In this header example, 6 lines have been extracted starting from line number 34. Additionally, 8 lines have been added starting at line number 34.
 - "git diff <branch1> <branch2>" 	# compare whole content of <branch1> and <branch2>
 - "git diff <branch1> <branch2> path/of/file"	# compare the contetnt of specified file within both branches
+- "git diff <branch>"		# compare Working Directory with <branch>
 
 
 
 
-- "git reflog" 			#  history of checkout operations
+- "git reflog" 			#  history of checkout operations (sequence of commits to which HEAD pointed to)
 
 
 						# UNDO STRATEGIES
@@ -170,7 +172,7 @@ git stash pop
 - "git reset --hard <commit_id>"	# reset to that specified commit. 
 										All existing commits after <commit_id> will not exist anymore.
 
-#4 COMMITED
+#4 COMMITED 
 - "git add .
    git commit --amend"				# edits the last commit , being able to add additional sources and edit commit message
 
@@ -178,12 +180,18 @@ git stash pop
 - "git reset"  	#unstage all files; update trees (Working Directory , Staging Index , Commit History)
 - "git reset HEAD~2" # update "Commit History" and "Staging Index" with 2 commits before commit to which points HEAD.
 - "git reset --soft HEAD || <commit_id>" 	# updates "Commit History" to specified <commit_id>
+												--soft : uncommit changes, changes are left staged (index).
 - "git reset --mixed HEAD || <commit_id>"	# updates both trees : "Commit History" and "Staging Index" to specified <commit_id>
 												Changes that have been undone from the Staging Index are moved to the Working Directory
+												--mixed (default): uncommit + unstage changes, changes are left in working tree.
 - "git reset --hard HEAD || <commit_id>"	# update all three trees : "Commit History", "Staging Index" and "Working Directory"  
+												--hard: uncommit + unstage + delete changes, nothing left.
 
 - "git reset <file>" - unstage a file 
+- "git reset" -unstage all staged files
 
+- "git restore ." -removes all unstaged changes from Working Directory.
+- "git restore <file>"
 
 
 
@@ -230,6 +238,8 @@ git stash pop
 		ex :	git fetch origin master	     (#extract changes from remote)
 				git checkout origin/master   (#downloads the fetched sources from "origin/master").
 				git merge origin/master 	|| 		git rebase origin/master
+				!!! If the merge is fast-forward => commit history will be coppied (bevavior is same as at rebase)
+					In this case git rebase is not allowed.
 	- git fetch --all	:	fetches all registered remotes and their branches
 
 

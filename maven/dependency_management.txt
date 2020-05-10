@@ -1,0 +1,146 @@
+--------------------------------------------------------------------------------------------------
+------------------------------------------------------------
+-----------------------------------
+			Dependency management
+-----------------------------------
+------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
+Dependency Management - a mechanism for centralizing dependency information
+
+-----------------------------------
+parent_pom:
+-----------------------------------
+				<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+				    <modelVersion>4.0.0</modelVersion>
+				    <groupId>com.java.code.geeks</groupId>
+				    <artifactId>java-code-geeks-parent</artifactId>
+				    <version>1.0.1</version>
+				    <packaging>pom</packaging>
+				 
+				    <dependencyManagement>
+				        <dependencies>
+				            <dependency>
+				                <groupId>log4j</groupId>
+				                <artifactId>log4j</artifactId>
+				                <version>1.2.17</version>
+				            </dependency>
+				        </dependencies>
+				    </dependencyManagement>
+				</project>
+
+
+-----------------------------------
+pom_a:
+-----------------------------------	
+				<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+				    <modelVersion>4.0.0</modelVersion>
+				    <artifactId>java-code-geeks-a</artifactId>
+				    <version>1.0.1</version>
+				    <packaging>pom</packaging>
+				    <parent>
+				        <groupId>com.java.code.geeks</groupId>
+				        <version>1.0.1</version>
+				        <artifactId>java-code-geeks-parent</artifactId>
+				    </parent>
+				 
+				    <dependencies>
+				        <dependency>
+				            <groupId>log4j</groupId>
+				            <artifactId>log4j</artifactId>
+				        </dependency>
+				    </dependencies>
+				     
+				</project>
+
+
+-----------------------------------
+pom_b:
+-----------------------------------	
+				<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+				    <modelVersion>4.0.0</modelVersion>
+				    <artifactId>java-code-geeks-b</artifactId>
+				    <version>1.0.1</version>
+				    <packaging>pom</packaging>
+				    <parent>
+				        <groupId>com.java.code.geeks</groupId>
+				        <version>1.0.1</version>
+				        <artifactId>java-code-geeks-parent</artifactId>
+				    </parent>
+				 
+				    <dependencies>
+				        <dependency>
+				            <groupId>log4j</groupId>
+				            <artifactId>log4j</artifactId>
+				        </dependency>
+				    </dependencies>
+				     
+				</project>
+
+
+!!! the parent pom defines some artifacts in a dependencyManagement tag, the pom 1 and 2 inherit from the parent pom and 
+	only have to reference the dependency, the version to use will be determined by the transitive dependencies mechanism. !!!
+
+
+
+
+------------------------------------------------------------
+-----------------------------------
+			Dependency scope
+-----------------------------------
+------------------------------------------------------------
+
+The dependency scope is useful when you want to define in which environment or build phase you want to use an artifact. There are 6 scopes available:
+- compile: This is the default scope if any is indicated. The dependencies are available in all classpaths of a project. 
+			All of those dependencies are propagated to the dependent projects.
+- provided: Use this when you expect that the JDK or the application server carries with him the dependency. 
+			Is only avaiable on compile and test classpath and is not transitive.
+- runtime: Use this scope in order to indicate that the dependency is not required for compile time, but is neccesary for execution. 
+			Will be available in test and runtime classpath but not on compile classpath.
+- test: Use this scope to indicate that a dependency is needed in test phase, it will be available on test compilation and execution classpaths only.
+- system: Use this to use a local jar on your filesystem. This will no be searched into any repository.
+- import: Use this inside a dependencyManagement tag. Indicates that the pom have to be replaced with the dependencies that are defined inside that pom.
+
+
+------------------------------------------------------------
+-----------------------------------
+			 Excluded dependency
+-----------------------------------
+------------------------------------------------------------
+Sometime you will have a dependency that depends on another dependencies. Is quite normal that those dependant dependencies 
+get in conflict with another declared or inherited dependency. You can easily exclude a dependency in order to avoid those conficts.
+
+			<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+			    <modelVersion>4.0.0</modelVersion>
+			    <artifactId>java-code-geeks-b</artifactId>
+			    <version>1.0.1</version>
+			    <packaging>pom</packaging>
+			    <parent>
+			        <groupId>com.java.code.geeks</groupId>
+			        <version>1.0.1</version>
+			        <artifactId>aca-parent</artifactId>
+			    </parent>
+			 
+			    <dependencies>
+			        <dependency>
+			            <groupId>com.atomikos</groupId>
+			            <artifactId>transactions-hibernate3</artifactId>
+			            <scope>test</scope>
+			            <exclusions>
+			                <exclusion>									--hibernate module will be excluded
+			                    <artifactId>hibernate</artifactId>
+			                    <groupId>org.hibernate</groupId>
+			                </exclusion>
+			            </exclusions>
+			        </dependency>
+			         
+			        <dependency>
+			            <groupId>log4j</groupId>
+			            <artifactId>log4j</artifactId>
+			        </dependency>
+			    </dependencies>
+			     
+			</project>

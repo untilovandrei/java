@@ -1,0 +1,414 @@
+--------------------------------------------
+------------------------------
+------------------
+Stream
+------------------
+------------------------------
+--------------------------------------------
+
+Stream - a sequence of elements and supports different kind of operations to perform computations upon those elements
+
+Stream operations are :
+	- intermediate  (return a stream so we can chain multiple intermediate operations without using semicolons)  = filter, map, sorted...
+	- terminal		(are void or return a non-stream result) = forEach...
+
+Example: 
+	List<String> myList =
+    Arrays.asList("a1", "a2", "b1", "c2", "c1");
+
+myList
+    .stream()
+    .filter(s -> s.startsWith("c"))
+    .map(String::toUpperCase)
+    .sorted()
+    .forEach(System.out::println);
+
+// C1
+// C2
+
+
+
+
+	!!!  Lists and Sets support new methods stream() and parallelStream()  !!!
+
+------------------------------
+------------------
+Types of Stream
+------------------
+------------------------------
+Initialize a stream :
+	-	Stream.of() => 	creates a stream from a bunch of object references.
+	-	.stream()	=>	returns a regular object stream from collection.
+
+Stream 1:
+		Arrays.asList("a1", "a2", "a3")
+		    .stream()
+		    .findFirst()
+		    .ifPresent(System.out::println);  // a1
+
+
+Stream 2:
+		Stream.of("a1", "a2", "a3")
+		    .findFirst()
+		    .ifPresent(System.out::println);  // a1
+
+
+Stream 3:
+		IntStream  - can replace the regular for-loop utilizing IntStream.range():
+			!!! same for LongStream , DoubleStream ...
+
+		IntStream.range(1, 4)
+    		.forEach(System.out::println);
+
+
+Stream 4: (Object stream -> primitive stream)
+		Stream.of("a1", "a2", "a3")
+		    .map(s -> s.substring(1))
+		    .mapToInt(Integer::parseInt)   // transform "int" to Integer   and returns IntStream
+ 		    .max()
+		    .ifPresent(System.out::println);  // 3
+
+	!!! analogic for mapToInt(), mapToLong() and mapToDouble.
+
+
+Stream 5: (primitive stream -> Object stream)
+
+		IntStream.range(1, 4)
+	    		.mapToObj(i -> new Obj(i));
+
+------------------------------
+------------------
+Processing Order
+------------------
+------------------------------
+
+!!! Every stream MUST end into a TERMINAL operation.
+
+	Stream.of("d2", "a2", "b1", "b3", "c")
+    .filter(s -> {								// as "filter" is an intermediate operation , NOTHING will be printed.
+        System.out.println("filter: " + s);
+        return true;
+    });
+
+
+    Stream.of("d2", "a2", "b1", "b3", "c")		// in this case  will be printed both by "filter" and by "forEach".
+    .filter(s -> {
+        System.out.println("filter: " + s);
+        return true;
+    })
+    .forEach(s -> System.out.println("forEach: " + s));
+
+
+Output :
+	filter:  d2
+	forEach: d2
+	filter:  a2
+	forEach: a2
+	filter:  b1
+	forEach: b1
+	filter:  b3
+	forEach: b3
+	filter:  c
+	forEach: c
+
+
+
+
+
+------------------------------
+------------------
+    Operations :
+------------------
+------------------------------
+
+
+-----------------------------------
+	Terminal operations
+-----------------------------------
+
+- anyMatch() - Terminal operation; 
+			- Purpose : evaluate condition for every element till first "true" value. 
+ 			- Param   : Object
+ 			- Return  : boolean 
+
+	   .anyMatch(s -> {								  
+	        System.out.println("anyMatch: " + s);
+	        return s.startsWith("A");
+	    });
+
+
+
+- forEach	- Terminal operation;
+			- Purpose : performs same operation on each element
+			- Param : Object
+ 			- Return: void
+
+		.forEach(s -> System.out.println("forEach: " + s));
+
+
+
+
+
+
+
+
+-----------------------------------
+	Intermediate operations
+-----------------------------------
+
+
+
+- filter() - Intermediate operation;
+			- Purpose : if return false -> eliminates the element
+			- Param : Object
+ 			- Return: boolean
+
+ 		.filter(s -> {
+	        System.out.println("filter: " + s);
+	        return s.startsWith("A");
+    	});
+
+
+- map()		- Intermediate operation;
+			- Purpose : replaces initial value from collection with return value 
+			- Param : Object
+ 			- Return: Object
+
+		.map(s -> {
+	        System.out.println("map: " + s);
+	        return s.toUpperCase();
+	    })
+
+
+- sorted()	- Intermediate operation; is execute horizontally (for all collection's elements then pass to next method)
+			- Purpose : sort pair or elements 
+			- Params : Object, Object
+			- Return: boolean
+
+	    .sorted((s1, s2) -> {
+	        System.out.printf("sort: %s; %s\n", s1, s2);
+	        return s1.compareTo(s2);
+	    })
+
+	    .sorted(Comparator.naturalOrder())  -- Orders all elements ascending as follows : numbers, Capital letters, letters
+
+
+
+
+-----------------------------------
+------------------
+    Reusing Streams
+------------------
+-----------------------------------
+
+!!! Java 8 streams cannot be reused. As soon as you call any terminal operation the stream is closed
+
+		Stream<String> stream =
+		    Stream.of("d2", "a2", "b1", "b3", "c")
+		        .filter(s -> s.startsWith("a"));
+
+		stream.anyMatch(s -> true);    // ok
+		stream.noneMatch(s -> true);   // exception	 java.lang.IllegalStateException: stream has already been operated upon or closed
+
+
+- Stream supplier to construct a new stream with all intermediate operations already set up:
+
+		Supplier<Stream<String>> streamSupplier =
+		    () -> Stream.of("d2", "a2", "b1", "b3", "c")
+		            .filter(s -> s.startsWith("a"));
+
+		streamSupplier.get().anyMatch(s -> true);   // ok  
+		streamSupplier.get().noneMatch(s -> true);  // ok
+
+- get() constructs a new stream on which we are save to call the desired terminal operation.
+
+
+
+
+------------------------------
+------------------
+    Advanced Operations
+------------------
+------------------------------
+
+- collect 	- terminal operation to transform the elements of the stream into a List, Set or Map
+
+	List<Person> persons =
+    Arrays.asList(
+        new Person("Max", 18),
+        new Person("Peter", 23),
+        new Person("Pamela", 23),
+        new Person("David", 12));
+
+    List<Person> filtered =persons
+					        .stream()
+					        .filter(p -> p.name.startsWith("P"))
+					        .collect(Collectors.toList());   		// similar for Set => Collectors.toSet()
+
+	System.out.println(filtered);    // [Peter, Pamela]
+
+
+---------------------------------------------------------------------------------------------------------
+    Collectors operations
+---------------------------------------------------------------------------------------------------------
+Collectors - performs operations on stream elements and convert them to Collection.
+
+- groupingBy 	- Purpose : covert stream to Map (grouping element by Key)
+				  Param  : element of stream (element of value list => value of map) 
+				  Return : Key of map
+
+		Map<Integer, List<Person>> personsByAge = persons
+		    .stream()
+		    .collect(Collectors.groupingBy(p -> p.age));
+
+		// age 18: [Max]
+		// age 23: [Peter, Pamela]
+		// age 12: [David]
+
+
+- averagingInt	- Param  : element of stream 
+				  Return : element required for average operation.
+
+		Double averageAge = persons
+		    .stream()
+		    .collect(Collectors.averagingInt(p -> p.age));
+
+
+- summarizingInt - Purpose : provide several options on gathered data : count, sum, min, max, average
+				   Param  : element of stream 
+				   Return : element required for operation.
+
+		IntSummaryStatistics ageSummary =
+	    persons
+	        .stream()
+	        .collect(Collectors.summarizingInt(p -> p.age));
+
+		System.out.println(ageSummary);     // IntSummaryStatistics{count=4, sum=76, min=12, average=19.000000, max=23}
+
+
+- joining - Purpose : joins string 
+			Syntax : joining(delimiter, prefix, suffix).
+			Returns : String.
+
+		String phrase = persons
+		    .stream()
+		    .filter(p -> p.age >= 18)
+		    .map(p -> p.name)
+		    .collect(Collectors.joining(" and ", "In Germany ", " are of legal age."));
+
+		System.out.println(phrase);
+		// In Germany Max and Peter and Pamela are of legal age.
+
+
+- toMap - Purpose : converts stream to map.
+		  Syntax : Collectors.toMap(keyMapper, valueMapper, mergeFunction)
+		  		- keyMapper : implementation for 1 param function which returns Key (param : stream element)
+		  		- valueMapper : implementation for 1 param function which returns element of Value (param : stream element)
+		  		- mergeFunction : implementation for 2 params function which returns the result of merging 2 elements of Value's List 
+		Map<Integer, String> map = persons
+		    .stream()
+		    .collect(Collectors.toMap(
+		        p -> p.age,
+		        p -> p.name,
+		        (name1, name2) -> name1 + ";" + name2));
+
+		System.out.println(map);   // {18=Max, 23=Peter;Pamela, 12=David}
+
+
+
+- of  - Purpose : instantiation of Custom Collector.
+		Syntax : 
+
+
+		Collector<Person, StringJoiner, String> personNameCollector =
+	    Collector.of(
+	        () -> new StringJoiner(" | "),          // supplier
+	        (j, p) -> j.add(p.name.toUpperCase()),  // accumulator
+	        (j1, j2) -> j1.merge(j2),               // combiner
+	        StringJoiner::toString);                // finisher
+
+		String names = persons
+		    .stream()
+		    .collect(personNameCollector);
+
+		System.out.println(names);  // MAX | PETER | PAMELA | DAVID
+
+
+
+
+---------------------------------------------------------------------------------------------------------
+    FlatMap	
+---------------------------------------------------------------------------------------------------------
+
+
+ // definition of classes
+
+		class Foo {
+		    String name;
+		    List<Bar> bars = new ArrayList<>();
+
+		    Foo(String name) {
+		        this.name = name;
+		    }
+		}
+
+		class Bar {
+		    String name;
+
+		    Bar(String name) {
+		        this.name = name;
+		    }
+		}
+
+
+
+
+		List<Foo> foos = new ArrayList<>();
+
+// create foos
+		IntStream
+		    .range(1, 4)
+		    .forEach(i -> foos.add(new Foo("Foo" + i)));
+
+// create bars
+		foos.forEach(f ->
+		    IntStream
+		        .range(1, 4)
+		        .forEach(i -> f.bars.add(new Bar("Bar" + i + " <- " + f.name))));
+
+
+		foos.stream()
+		    .flatMap(f -> f.bars.stream())
+		    .forEach(b -> System.out.println(b.name));      	
+
+
+//Equivalent sum up of all above commands
+
+		IntStream.range(1, 4)
+		    .mapToObj(i -> new Foo("Foo" + i))
+		    .peek(f -> IntStream.range(1, 4)
+		        .mapToObj(i -> new Bar("Bar" + i + " <- " f.name))
+		        .forEach(f.bars::add))
+		    .flatMap(f -> f.bars.stream())
+		    .forEach(b -> System.out.println(b.name));
+
+
+// Bar1 <- Foo1
+// Bar2 <- Foo1
+// Bar3 <- Foo1
+// Bar1 <- Foo2
+// Bar2 <- Foo2
+// Bar3 <- Foo2
+// Bar1 <- Foo3
+// Bar2 <- Foo3
+// Bar3 <- Foo3  
+
+https://winterbe.com/posts/2014/07/31/java8-stream-tutorial-examples/
+
+
+https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html
+https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html
+
+
+
+

@@ -143,3 +143,307 @@ Daemon Thread
 - Thread.setDaemon(true) is used to create a daemon thread in java. 
 	This method should be invoked before the thread is started otherwise it will throw IllegalThreadStateException
 - check if a thread is daemon thread or not by calling isDaemon().
+
+
+
+------------------------------
+-----------------
+Dead lock
+-----------------
+------------------------------
+Deadlock in java is a programming situation where two or more threads are blocked forever.
+HOW TO AVOID "Dead lock"
+-	Avoid Nested Locks: 
+		# This is the most common reason for deadlocks, avoid locking another resource if you already hold one. 
+		  It’s almost impossible to get deadlock situation if you are working with only one object lock.
+-	Lock Only What is Required: 
+		# You should acquire lock only on the resources you have to work on, for example in above program I am locking
+		  the complete Object resource but if we are only interested in one of it’s fields, then we should lock only that 
+		  specific field not complete object.
+-	Avoid waiting indefinitely: 
+		# You can get deadlock if two threads are waiting for each other to finish indefinitely using thread join. 
+		  If your thread has to wait for another thread to finish, it’s always best to use join with maximum time you want 
+		  to wait for thread to finish.
+
+
+
+
+------------------------------
+-----------------
+Timer TimerTask
+-----------------
+------------------------------
+java.util.Timer 	-  	utility class that can be used to schedule a thread to be executed at certain time in future. 
+						Java Timer class can be usedt o schedule a task to be run one-time or to be run at regular intervals
+					-	thread safe and multiple threads can share a single Timer object without need for external synchronization
+
+java.util.TimerTask - 	abstract class that implements Runnable interface and we need to extend this class to create our own 
+						TimerTask that can be scheduled using java Timer class.
+
+public class MyTimerTask extends TimerTask {
+
+    @Override
+    public void run() {
+        System.out.println("Timer task started at:"+new Date());
+        completeTask();
+        System.out.println("Timer task finished at:"+new Date());
+    }
+
+    private void completeTask() {
+        try {
+            //assuming it takes 20 secs to complete the task
+            Thread.sleep(20000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void main(String args[]){
+        TimerTask timerTask = new MyTimerTask();	//running timer task as daemon thread
+
+        Timer timer = new Timer(true);
+        timer.scheduleAtFixedRate(timerTask, 0, 10*1000);
+        System.out.println("TimerTask started");
+
+        try {
+            Thread.sleep(120000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        timer.cancel();								//cancel after sometime
+        System.out.println("TimerTask cancelled");
+
+        try {
+            Thread.sleep(30000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+}
+
+-	if task_execution_time > delay_time 	=>	  Timer will wait for it to finish and once finished, it will start again the next task from the queue.
+-	Timer cancel() method is used to terminate the timer and discard any scheduled tasks, however it doesn’t interfere with the currently 
+	executing task and let it finish.
+-	If the timer is run as daemon thread, whether we cancel it or not, it will terminate as soon as all the user threads are finished executing.
+
+
+
+
+
+------------------------------
+-----------------
+Producer Consumer Problem
+-----------------
+------------------------------
+-	java.util.concurrent.BlockingQueue - Queue that support operations that wait for the queue to become non-empty 
+	when retrieving and removing an element, and wait for space to become available in the queue when adding an element.
+
+-	BlockingQueue doesn’t accept null values and throw NullPointerException if you try to store null value in the queue.
+-	BlockingQueue implementations are thread-safe
+- 	BlockingQueue interface is part of java collections framework and it’s primarily used for implementing producer consumer problem.
+
+While implementing producer consumer problem in BlockingQueue, we will use ArrayBlockingQueue implementation:
+-	put(E e): This method is used to insert elements to the queue. 
+                !!! If the queue is full, it waits for the space to be available.
+-	E take(): This method retrieves and remove the element from the head of the queue. 
+                !!! If queue is empty it waits for the element to be available.
+
+---------------------------------------------------------	Producer 	---------------------------------------------------------
+public class Producer implements Runnable {
+
+    private BlockingQueue<Message> queue;
+    
+    public Producer(BlockingQueue<Message> q){
+        this.queue=q;
+    }
+    @Override
+    public void run() {
+        //produce messages
+        for(int i=0; i<100; i++){
+            Message msg = new Message(""+i);
+            try {
+                Thread.sleep(i);
+                queue.put(msg);
+                System.out.println("Produced "+msg.getMsg());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        //adding exit message
+        Message msg = new Message("exit");
+        try {
+            queue.put(msg);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+}
+
+
+---------------------------------------------------------	Consumer 	---------------------------------------------------------
+
+public class Consumer implements Runnable{
+
+private BlockingQueue<Message> queue;
+    
+    public Consumer(BlockingQueue<Message> q){
+        this.queue=q;
+    }
+
+    @Override
+    public void run() {
+        try{
+            Message msg;
+            //consuming messages until exit message is received
+            while((msg = queue.take()).getMsg() !="exit"){
+            Thread.sleep(10);
+            System.out.println("Consumed "+msg.getMsg());
+            }
+        }catch(InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+---------------------------------------------------------	Service 	---------------------------------------------------------
+
+public class ProducerConsumerService {
+
+    public static void main(String[] args) {
+
+        //Creating BlockingQueue of size 10
+        BlockingQueue<Message> queue = new ArrayBlockingQueue<>(10);
+
+        Producer producer = new Producer(queue);
+        Consumer consumer = new Consumer(queue);
+
+        //starting producer to produce messages in queue
+        new Thread(producer).start();
+
+        //starting consumer to consume messages from queue
+        new Thread(consumer).start();
+
+        System.out.println("Producer and Consumer has been started");
+    }
+
+}
+
+
+Output :
+
+Producer and Consumer has been started
+Produced 0
+Produced 1
+Produced 2
+Produced 3
+Produced 4
+Consumed 0
+Produced 5
+Consumed 1
+Produced 6
+Produced 7
+Consumed 2
+Produced 8
+...
+
+
+
+
+
+
+------------------------------
+-----------------
+Thread Pool
+-----------------
+------------------------------
+Thread Pool - 	manages the collection of Runnable threads. It contains a queue that keeps tasks waiting to get executed. 
+				We can use ThreadPoolExecutor to create thread pool in Java.
+"java.util.concurrent.Executors" provide factory and support methods for java.util.concurrent.Executor interface to create the thread pool in java.
+
+Executors - utility class that also provides useful methods to work with ExecutorService, ScheduledExecutorService, 
+			ThreadFactory, and Callable classes through various factory methods.
+
+---------------------------------------------------------	Thread 	---------------------------------------------------------
+
+package com.journaldev.threadpool;
+
+public class WorkerThread implements Runnable {
+  
+    private String command;
+    
+    public WorkerThread(String s){
+        this.command=s;
+    }
+
+    @Override
+    public void run() {
+        System.out.println(Thread.currentThread().getName()+" Start. Command = "+command);
+        processCommand();
+        System.out.println(Thread.currentThread().getName()+" End.");
+    }
+
+    private void processCommand() {
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toString(){
+        return this.command;
+    }
+}
+
+
+---------------------------------------------------------	Thread pool 	---------------------------------------------------------
+
+package com.journaldev.threadpool;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class SimpleThreadPool {
+
+    public static void main(String[] args) {
+        ExecutorService executor = Executors.newFixedThreadPool(5);
+        for (int i = 0; i < 10; i++) {
+            Runnable worker = new WorkerThread("" + i);
+            executor.execute(worker);
+          }
+        executor.shutdown();
+        while (!executor.isTerminated()) {
+        }
+        System.out.println("Finished all threads");
+    }
+}
+
+In above program are created a fixed-size thread pool of 5 worker threads. Then we are submitting 10 jobs to this pool, since the pool size is 5, it will start working on 5 jobs and other jobs will be in wait state, as soon as one of the job is finished, another job from the wait queue will be picked up by worker thread and get’s executed.
+
+Output:
+pool-1-thread-2 Start. Command = 1
+pool-1-thread-4 Start. Command = 3
+pool-1-thread-1 Start. Command = 0
+pool-1-thread-3 Start. Command = 2
+pool-1-thread-5 Start. Command = 4
+pool-1-thread-4 End.
+pool-1-thread-5 End.
+pool-1-thread-1 End.
+pool-1-thread-3 End.
+pool-1-thread-3 Start. Command = 8
+pool-1-thread-2 End.
+pool-1-thread-2 Start. Command = 9
+pool-1-thread-1 Start. Command = 7
+pool-1-thread-5 Start. Command = 6
+pool-1-thread-4 Start. Command = 5
+pool-1-thread-2 End.
+pool-1-thread-4 End.
+pool-1-thread-3 End.
+pool-1-thread-5 End.
+pool-1-thread-1 End.
+Finished all threads

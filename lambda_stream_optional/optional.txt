@@ -1,0 +1,120 @@
+--------------------------------------------
+------------------------------
+------------------
+Optional
+------------------
+------------------------------
+--------------------------------------------
+The purpose of the class is to provide a type-level solution for representing optional values instead of null references.
+
+
+
+Optional<String> empty = Optional.empty();
+empty.isPresent() 	=> 	false
+empty.get() 		=>	java.util.NoSuchElementException
+
+
+ String name = null;
+ Optional.of(name);	=>	java.lang.NullPointerException
+		!!! "name" can't be null overwise exception thrown
+
+- ofNullable(string) - if "string" is null, it returns empty Optional object (no exception is thrown).
+		 String name = null;
+		 Optional<String> str = Optional.ofNullable(name);	 
+		 str.isPresent() 	=>	returns false when "Optional.ofNullable(name)" returns empty optional 	=>	"name" is null. 
+
+
+- ifPresent() - runs the lambda impl based on method (isPresent())
+		 Optional<String> opt = Optional.of("baeldung");
+		 opt.ifPresent(name -> System.out.println(name.length()));	
+
+
+- orElse() - provide default value explicitly if "Optional.ofNullable(string)" returns empty optional 
+		 String nullName = null;
+		 String name = Optional.ofNullable(nullName).orElse("john");
+
+		 //name = "john"
+
+		 String nullName = "mike";
+		 String name = Optional.ofNullable(nullName).orElse("john");
+
+		 //name = "mike"
+
+
+- orElseGet() - same usage as orElse() but provides the possibility to implemnet a method which returns that default value
+
+
+		String nullName = null;
+	    String name = Optional.ofNullable(nullName).orElseGet(() -> "john");
+	    assertEquals("john", name);
+
+!!!orElse and orElseGet  are almost the same.
+- using orElseGet() to retrieve the wrapped value, the getMyDefault() method is not even invoked since the contained value is present.
+- using orElse(), whether the wrapped value is present or not, the default object is created.
+
+orElseGet wins !!!
+
+
+
+- orElseThrow - throws exception is value is null
+
+		String nullName = null;
+	    String name = Optional.ofNullable(nullName).orElseThrow(
+	      IllegalArgumentException::new);
+
+
+- filter() - check the presense of a specific element
+		Param : value stored in Optional
+		Return : Optional object
+		- if filter() returns "false" => empty Optional obj is returned.
+		!!use it to reject a wrong email format or a password that is not strong enough
+
+			Integer year = 2016;
+		    Optional<Integer> yearOptional = Optional.of(year);
+		    boolean is2016 = yearOptional.filter(y -> y == 2016).isPresent();
+
+
+- map() - method takes the existing value, performs a computation using this value and returns the result of the computation wrapped in an Optional object:
+
+		String name = "baeldung";
+	    Optional<String> nameOptional = Optional.of(name);
+	 
+	    int len = nameOptional
+	     .map(String::length)
+	     .orElse(0);
+
+
+- flatMap() - similar to "map()" but it extracts "Datatype data" from Optional<Datatype> being wrapped into a Optional<ComplexObject>
+
+		public class Person {
+	    private String name;
+	    private int age;
+	    private String password;
+	 
+	    public Optional<String> getName() {
+	        return Optional.ofNullable(name);
+	    }
+	 
+	    public Optional<Integer> getAge() {
+	        return Optional.ofNullable(age);
+	    }
+	 
+	    public Optional<String> getPassword() {
+	        return Optional.ofNullable(password);
+	    }
+ 
+ --------------
+
+
+	    Person person = new Person("john", 26);
+    	Optional<Person> personOptional = Optional.of(person);
+
+--extract Optional string 
+		Optional<Optional<String>> nameOptionalWrapper  = personOptional.map(Person::getName);
+
+
+-- extract string by flatMap (extracts string wrapped into Optional from a Optional<Object>)
+		String name = personOptional
+  						.flatMap(Person::getName) //returns Optional<String>
+      					.orElse("");
+

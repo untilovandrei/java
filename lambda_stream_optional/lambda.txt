@@ -1,0 +1,171 @@
+Lambda expressions -  express instances of functional interfaces.
+Functional Interfaces - Interfaces with single abstract method.
+
+Lambda expressions functionalities:
+	- enable to treat functionality as a method argument, or code as data.
+	- a function that can be created without belonging to any class.
+	- can be passed around as if it was an object and executed on demand.
+
+
+// A sample functional interface (An interface with single abstract method)
+interface FuncInterface 
+{ 
+    // An abstract function 
+    void abstractFun(int x); 
+  
+    // A non-abstract (or default) function 
+    default void normalFun() 
+    { 
+       System.out.println("Hello"); 
+    } 
+} 
+
+
+
+
+class Test 
+{ 
+    public static void main(String args[]) 
+    { 
+        // lambda expression to implement above functional interface. This interface by default implements abstractFun() .
+        FuncInterface fobj = (int x)->System.out.println(2*x); 
+  
+        // This calls above lambda expression and prints 10. 
+        fobj.abstractFun(5); 
+    } 
+} 
+
+
+Syntax : 
+-	() -> System.out.println("Zero parameter lambda");
+-	(p) -> System.out.println("One parameter: " + p);
+- 	(p1, p2) -> System.out.println("Multiple parameters: " + p1 + ", " + p2);
+
+
+
+!!! When there is a single statement curly brackets are not mandatory and the return type of the anonymous function is the same as that of the body expression.
+
+
+Sorting Collections with Comparator  "public int compare(Object obj1, Object obj2)"
+	compare() method working: 
+- returns negative value(-1), if and only if obj1 has to come before obj2.
+- returns positive value(+1), if and only if obj1 has to come after obj2.
+- returns zero(0), if and only if obj1 and obj2 are equal.
+
+
+------------------------------------------------  Sorting elements of List(I) with Lambda Expression  ---------------------------------------------------------
+
+public class Demo { 
+    public static void main(String[] args) 
+    { 
+        ArrayList<Integer> al = new ArrayList<Integer>(); 
+        al.add(205); 
+        al.add(102); 
+        al.add(98); 
+        al.add(275); 
+        al.add(203); 
+        System.out.println("Elements of the ArrayList " +  
+                              "before sorting : " + al); 
+  
+        // using lambda expression in place of comparator object 
+        Collections.sort(al, (o1, o2) -> (o1 > o2) ? -1 : 
+                                       (o1 < o2) ? 1 : 0); 
+  
+        System.out.println("Elements of the ArrayList after" +  
+                                           " sorting : " + al); 
+    } 
+} 
+
+
+Elements of the ArrayList before sorting : [205, 102, 98, 275, 203]
+Elements of the ArrayList after sorting : [275, 205, 203, 102, 98]
+
+
+------------------------------------------------ Sorting TreeSet using Lambda Expression  -----------------------------------------------------------------------
+
+public class Demo { 
+    public static void main(String[] args) 
+    { 
+        TreeSet<Integer> h =  
+                       new TreeSet<Integer>((o1, o2) -> (o1 > o2) ?  
+                                          -1 : (o1 < o2) ? 1 : 0); 
+        h.add(850); 
+        h.add(235); 
+        h.add(1080); 
+        h.add(15); 
+        h.add(5); 
+        System.out.println("Elements of the TreeSet after" +  
+                                        " sorting are: " + h); 
+    } 
+} 
+
+
+
+
+
+
+----------------------------------------------
+------------------------------
+---------------
+Lambda used instead of function reference
+---------------
+------------------------------
+----------------------------------------------
+Map<String, Integer> nameMap = new HashMap<>();
+Integer value = nameMap.computeIfAbsent("John", s -> s.length());
+
+Java 8 instroduces default Functional Interfaces like :
+
+Function<T,R>       -   Represents a function that accepts one argument and produces a result.
+BiFunction<T,U,R>   -   Represents a function that accepts two arguments and produces a result.
+Consumer<T>         -   Represents an operation that accepts a single input argument and returns no result.
+BiConsumer<T,U>     -   Represents an operation that accepts two input arguments and returns no result.
+Predicate<T>        -   Represents a function of one argument and returns boolean value.
+BiPredicate<T,U>    -   Represents a function of two arguments and returns boolean value.
+
+
+
+Map<String, Integer> nameMap = new HashMap<>();
+Integer value = nameMap.computeIfAbsent("John", s -> s.length());
+
+function "computeIfAbsent" must have a reference to implemetnation of Function<T,R>.
+"s -> s.length()" gets one param "s"  and one result "s.length()"
+
+we may replace the lambda with a method reference that matches passed and returned value types.
+"s -> s.length()"" can be replaces with "String::length"  (method length of String class)
+
+-----------------------------------Default Functional Interface usage
+// implementation of method with funtional interface as param "fn" . method "apply" is defined inside "Function" interface
+public String add(String string, Function<String, String> fn) {
+    return fn.apply(string);    // running this method will execute the  functionality defined below in "fn" .
+}
+
+
+Function<String, String> fn = parameter -> parameter + " from lambda";  // implementation of functional interface
+String result = useFoo.add("Message ", fn);                             //usage
+
+
+
+-----------------------------------Defined Funcitonal Interface  usage
+- "@FunctionalInterface"  - is not mandatory . Once is set, it will not let to compile the interface with more that one abstract methods.
+
+
+@FunctionalInterface"   // define funtinal interface . 
+public interface Foo {
+    String method(String string);
+}
+
+
+// implementation of functional interface
+public String add(String string, Foo foo) {
+    return foo.method(string);      
+}
+
+
+// usage of functional interface
+Foo foo = parameter -> parameter + " from lambda";  // lambda expression "parameter" must be string and (parameter + " from lambda") will be return value .
+String result = useFoo.add("Message ", foo);
+
+
+- Functional interfaces can be extended by other functional interfaces if their abstract methods have the same signature 
+    (return val , method name, paramlist)

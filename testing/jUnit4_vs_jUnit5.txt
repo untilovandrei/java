@@ -1,0 +1,100 @@
+------------------------------------------------------------------------------------
+--------------------------------------------------------
+----------------------------
+JUNIT 4		vs		JUNIT 5									 
+----------------------------
+--------------------------------------------------------
+------------------------------------------------------------------------------------
+					Description							JUNIT 4		vs		JUNIT 5
+
+Declare a test method									@Test				@Test
+Execute before all test methods in the current class	@BeforeClass		@BeforeAll
+Execute after all test methods in the current class		@AfterClass			@AfterAll
+Execute before each test method							@Before				@BeforeEach
+Execute after each test method							@After				@AfterEach
+Disable a test method / class							@Ignore				@Disabled
+Test factory for dynamic tests							-					@TestFactory
+Nested tests											-					@Nested
+Tagging and filtering									@Category			@Tag
+Register custom extensions								-					@ExtendWith
+
+
+
+
+
+----------------------------
+	Required JDK Version								 
+----------------------------
+
+Junit 4 requires Java 5 or higher.
+Junit 5 requires Java 8 or higher.
+
+
+
+----------------------------
+	 Assertions								 
+----------------------------
+							Junit 4
+public static void assertEquals(long expected, long actual)
+public static void assertEquals(String message, long expected, long actual)
+
+
+							JUnit 5
+assertThrows()
+assertAll() 
+assertAll()
+
+
+public static void assertEquals(long expected, long actual)
+public static void assertEquals(long expected, long actual, String message)
+public static void assertEquals(long expected, long actual, Supplier messageSupplier)
+
+
+
+
+----------------------------
+	 Assumptions							 
+----------------------------
+In Junit 4, org.junit.Assume contains methods
+		assumeFalse()
+		assumeNoException()
+		assumeNotNull()
+		assumeThat()
+		assumeTrue()
+
+In Junit 5, org.junit.jupiter.api.Assumptions contains
+		assumeFalse()
+		assumingThat​()
+		assumeTrue()
+
+
+
+----------------------------
+	 Test Suites							 
+----------------------------
+
+In Junit 4, @RunWith and @Suite annotation. e.g.
+
+		import org.junit.runner.RunWith;
+		import org.junit.runners.Suite;
+		 
+		@RunWith(Suite.class)
+		@Suite.SuiteClasses({
+		        ExceptionTest.class, 
+		        TimeoutTest.class
+		})
+		public class JUnit4Example 
+		{
+		}
+
+In Junit 5, @RunWith, @SelectPackages and @SelectClasses e.g.
+
+		import org.junit.platform.runner.JUnitPlatform;
+		import org.junit.platform.suite.api.SelectPackages;
+		import org.junit.runner.RunWith;
+		 
+		@RunWith(JUnitPlatform.class)
+		@SelectPackages("com.howtodoinjava.junit5.examples")
+		public class JUnit5Example 
+		{
+		}

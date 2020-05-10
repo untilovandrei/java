@@ -1,0 +1,102 @@
+----------------------------------
+		Operations on String
+----------------------------------
+	assertThat(frodo)
+	  .isNotEqualTo(sauron)
+	  .isIn(fellowshipOfTheRing);
+	 
+	assertThat(frodo.getName())
+	  .startsWith("Fro")
+	  .endsWith("do")
+	  .isEqualToIgnoringCase("frodo");
+	 
+	assertThat(fellowshipOfTheRing)
+	  .hasSize(9)
+	  .contains(frodo, sam)
+	  .doesNotContain(sauron);
+
+
+----------------------------------
+  		Operations on Objects
+----------------------------------
+  	assertThat(fido).isEqualTo(fidosClone);
+  	assertThat(fido).isEqualToComparingFieldByFieldRecursively(fidosClone);
+
+
+
+----------------------------------
+  		Boolean Assertions
+----------------------------------
+-isTrue()
+-isFalse()
+
+assertThat("".isEmpty()).isTrue();
+
+
+----------------------------------
+  		Iterable/Array Assertions
+----------------------------------
+List<String> list = Arrays.asList("1", "2", "3");
+1.	assertThat(list).contains("1");
+
+2.	assertThat(list).isNotEmpty();
+
+3.	assertThat(list)
+	  	.isNotEmpty()
+	  	.contains("1")
+	  	.doesNotContainNull()
+	  	.containsSequence("2", "3");
+
+
+
+----------------------------------
+  		Character Assertions
+----------------------------------
+assertThat(someCharacter)
+  	.isNotEqualTo('a')
+  	.inUnicode()
+  	.isGreaterThanOrEqualTo('b')
+  	.isLowerCase();
+
+
+----------------------------------
+  		Class Assertions
+----------------------------------
+assertThat(Runnable.class).isInterface();
+assertThat(Exception.class).isAssignableFrom(NoSuchElementException.class);
+
+
+
+
+----------------------------------
+  		File Assertions
+----------------------------------
+assertThat(someFile)
+  .exists()
+  .isFile()
+  .canRead()
+  .canWrite();
+
+
+----------------------------------
+  	Double/Float/Integer Assertions
+----------------------------------
+assertThat(5.1).isEqualTo(5, withPrecision(1d));
+
+
+
+----------------------------------
+  		Map Assertions
+----------------------------------
+assertThat(map)
+  .isNotEmpty()
+  .containsKey(2)
+  .doesNotContainKeys(10)
+  .contains(entry(2, "a"));
+
+
+----------------------------------
+  		Throwable Assertions
+----------------------------------
+assertThat(ex).hasNoCause().hasMessageEndingWith("c");
+
