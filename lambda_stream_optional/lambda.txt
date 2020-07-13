@@ -37,8 +37,8 @@ class Test
 
 
 Syntax : 
--	() -> System.out.println("Zero parameter lambda");
--	(p) -> System.out.println("One parameter: " + p);
+-	() -> Systambda");
+-	(p) -> System.out.println("One parameter: em.out.println("Zero parameter l" + p);
 - 	(p1, p2) -> System.out.println("Multiple parameters: " + p1 + ", " + p2);
 
 

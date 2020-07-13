@@ -1,0 +1,69 @@
+- PESSIMISTIC_READ – allows us to obtain a shared lock and prevent the data from being updated or deleted
+- PESSIMISTIC_WRITE – allows us to obtain an exclusive lock and prevent the data from being read, updated or deleted
+		!!!some database systems implement multi-version concurrency control which allows readers to fetch data that has been already blocked.
+- PESSIMISTIC_FORCE_INCREMENT – works like PESSIMISTIC_WRITE and it additionally increments a version attribute of a versioned entity – entities which have an attribute annotated with @Version.Acquiring that lock results in updating the version column.
+
+!!! All of them are static members of the LockModeType class and allow transactions to obtain a database lock. They all are retained until the transaction commits or rolls back.
+
+!!! Can obtain only one lock at a time. If it's impossible a PersistenceException is thrown.
+
+
+If an object is exclusively locked, shared locks cannot be obtained.
+If an object is exclusively locked, other exclusive locks cannot be obtained.
+If one or more shared locks already exist, exclusive locks cannot be obtained.
+
+Shared lock is available for all transactions
+
+
+
+
+- PessimisticLockException - obtaining a lock or converting a shared to exclusive lock fails and results in a transaction-level rollback
+- LockTimeoutException - obtaining a lock or converting a shared lock to exclusive times out and results in a statement-level rollback
+- PersistanceException - indicates that a persistence problem occurred marks the active transaction to be rolled back.
+
+					-- locking examples
+---1---
+Query query = entityManager.createQuery("from Student where studentId = :studentId");
+query.setParameter("studentId", studentId);
+query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
+query.getResultList()
+
+---2---
+entityManager.find(Student.class, studentId, LockModeType.PESSIMISTIC_READ);
+
+---3---
+Student resultStudent = entityManager.find(Student.class, studentId);
+entityManager.lock(resultStudent, LockModeType.PESSIMISTIC_WRITE);
+
+---4--- 
+Student resultStudent = entityManager.find(Student.class, studentId);
+entityManager.refresh(resultStudent, LockModeType.PESSIMISTIC_FORCE_INCREMENT);
+
+---5---
+@NamedQuery(name="lockStudent", 
+			query="SELECT s FROM Student s WHERE s.id LIKE :studentId",
+  			lockMode = PESSIMISTIC_READ)
+
+
+					---pessimistic lock scopes
+>>> PessimisticLockScope.NORMAL 
+	- default scope
+	- locks the entity itself
+	- When used with joined inheritance it also locks the ancestors
+			    *If Employee is blocked then Person is blocked too
+			@Entity
+			@Inheritance(strategy = InheritanceType.JOINED)
+			public class Person {
+
+			@Entity
+			public class Employee extends Person {
+
+>>> PessimisticLockScope.EXTENDED
+	- same functionality as NORMAL
+	- in addition, it's able to block related entities in a join table.
+	- works with entities annotated with @ElementCollection or @OneToOne,  
+	  @OneToMany etc. with @JoinTable.
+
+
+
+

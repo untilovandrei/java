@@ -1,0 +1,65 @@
+1.  optimistic/pesimistic locks
+						Optimistic Locking 
+							-you manage your data by checking a special value in the database — it is often a version number, timestamp, date, etc.— before you read/write to the data to make sure that the data you are dealing with is not stale/old/changed since you’ve last viewed
+						Pessimistic locking 
+							- is when you take an exclusive lock so that no one else can start modifying the record.
+							- provides better integrity on the data however management of the lock is harder and if you fail to manage that, your application may encounter deadlocks.
+
+2.	prinderea erorilor în aplicațiile Rest Java    -   @ControllerAdvice  (nQuiry)
+						- Controller class annotated with @ControllerAdvice
+						- method annotated with @ExceptionHandler({AuthenticationException.class}) inside this controller handles the specified exceptions
+						- return response entity
+3. 	design patterns  (Singleton,Prototype,Factory, etc.)
+4.	ArrayList vs LinkedList  ( maps .... )
+						---Search :
+								*ArrayList = O(1) performance = uses array data structure implicitly which makes it faster for searching an element in the list
+								LinkedList = O(n) performance = implements doubly linked list which requires the traversal through all the elements for searching
+						---Delete :
+								ArrayList = O(1) best case (last elem) ; O(n) worst case (last elem)
+								*LinkedList = O(1) performance
+						---Inserts :
+								ArrayList = O(n) worst case (first elem) ; O(1) best case (last elem)
+								*LinkedList = O(1) performance
+						---Memory Overhead :
+								Memory consumption is high in LinkedList comparatively to ArrayList.
+						------------------
+						---ArrayList = used for searches
+						---LinkedList = used for insert/delete operations
+
+											
+					HashMap vs TreeMaps vs Hashtable vs LinkedHashMap
+						--HashMap 
+								-doesn't allow two identical elements . 
+								-output order != insert order
+								-It should implement hashCode() and equals() to fullfill it.
+								-1) If two objects are equal, then they must have the same hash code.
+								-2) If two objects have the same hash code, they may or may not be equal
+						--TreeMap 
+								-are sorted by keys, 
+								-the object for key has to be able to compare with each other, it has to implement Comparable interface.
+									@Override
+									public int compareTo(Dog o)
+						--Hashtable 
+								-roughly equivalent to HashMap, except that it is synchronized and doesn't permit nulls
+						--LinkedHashMap 
+								- subclass of HashMap but in addition it preserves the insertion-order (output order = insert order), 
+
+5. 	testarea WebServicii REST (Unit Teste, Mock test, Integration test)   exemple , scopul
+-UNIT TESTING is a level of software testing where individual units/ components of a software are tested.
+		* The cost of fixing a defect detected during unit testing is lesser in comparison to that of defects detected at higher levels.
+		* Debugging is easy. When a test fails, only the latest changes need to be debugged. 
+-INTEGRATION TESTING is a level of software testing where individual units are combined and tested as a group.
+	>>Approaches<<
+		* Big Bang is an approach to Integration Testing where all or most of the units are combined together and tested at one go. This  
+			approach is taken when the testing team receives the entire software in a bundle. 
+		* Top Down is an approach to Integration Testing where top-level units are tested first and lower level units are tested step by step 
+			after that. This approach is taken when top-down development approach is followed.
+		* Bottom Up is an approach to Integration Testing where bottom level units are tested first and upper-level units step by step after 
+			that. 
+		* Sandwich/Hybrid is an approach to Integration Testing which is a combination of Top Down and Bottom Up approaches.
+
+
+6.	Microservicii (microservicii și arhitectura monolit)
+7.	Profiluri în aplicație, de exemplu profilul development și profilul prduction.  (NQ ex : dev si prods)
+
+

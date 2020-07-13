@@ -1,0 +1,64 @@
+DBMS - Database Management System (DBMS) is a program that controls creation, maintenance and use of a database. 
+
+RDBMS - Relational Database Management System stores the data into the collection of tables, which is related by common fields between the
+		columns of the table. It also provides relational operators to manipulate the data stored into the tables.
+		Ex : Oracle Database, SQL Server.
+
+SQL -	stands for Structured Query Language , and it is used used to perform tasks such as retrieval, updation, insertion and deletion of data 		from a database.
+		Ex : MySQL, SQLite.
+
+Database - is an organized form of data for easy access, storing, retrieval and managing of data.
+
+Primary key - combination of fields which uniquely specify a row. This is a special kind of unique key, and it has implicit NOT NULL 
+		constraint. It means, Primary key values cannot be NULL.
+
+Unique key -uniquely identified each record in the database. This provides uniqueness for the column or set of columns.
+
+Foreign key - column(s) which can be related to the primary key of another table. Relationship needs to be created between two tables by 
+		referencing foreign key with the primary key of another table.
+
+Join - keyword used to query data from more tables based on the relationship between the fields of the tables
+
+-------------------------------
+------------------------------------
+----------------------------------------			>>> Normalization <<<
+------------------------------------										 
+-------------------------------
+Normalization - the process of minimizing redundancy and dependency by organizing fields and table of a database. The main aim of Normalization
+		is to add, delete or modify field that can be made in a single table.
+
+	>>>>>	First Normal Form (1NF):
+This should remove all the duplicate columns from the table. Creation of tables for the related data and identification of unique columns.
+
+
+	>>>>>	Second Normal Form (2NF):
+Meeting all requirements of 1NF. Creation of relationships between the tables using primary keys.
+
+
+	>>>>>	Third Normal Form (3NF):
+Meeting all requirements of 2NF. Removing the columns which are not dependent on primary key constraints.
+
+
+	>>>>>	Fourth Normal Form (4NF):
+Meeting all requirements of 3NF. It should not have multi-valued dependencies.
+
+-------------------------------
+------------------------------------
+----------------------------------------			
+----------------------------------
+-------------------------------
+
+A view is a virtual table which consists of a subset of data contained in a table. Views are not virtually present, and it takes less space to store. View can have data of one or more tables combined, and it is depending on the relationship.
+
+
+Index - performance tuning method of allowing faster retrieval of records from the table. An index creates an entry for each value and it will 
+		be faster to retrieve data.
+		* Unique Index - indexing does not allow the field to have duplicate values if the column is unique indexed. 
+						Unique index can be applied automatically when primary key is defined.
+		* Clustered Index - reorders the physical order of the table and search based on the key values. 
+						Each table can have only one clustered index.
+		* NonClustered Index - NonClustered Index does not alter the physical order of the table and maintains logical order of data. 
+						Each table can have 999 nonclustered indexes.
+
+Trigger - code or programs that automatically execute with response to some event on a table or view in a database. 
+		Mainly, trigger helps to maintain the integrity of the database.

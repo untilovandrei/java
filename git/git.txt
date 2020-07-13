@@ -131,9 +131,8 @@ git stash pop
 														# COMMIT OPTIONS 
 - "git commit --amend" 		# modifies the last commit instead of creating a new commit 
 								# command opens file to edit commit message (empty message aborts commit)
-- "git commit -a"  			# commit changes : opens file to insert commit message and review commited changes 
-
-
+- "git commit --amend --no-edit" - after "git add file.txt" , command --amend will incorporate the "file.txt" into last commit, without 
+							changing the message.
 
 
 														# CHECK CHANGES 

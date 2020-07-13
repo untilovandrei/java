@@ -1,0 +1,46 @@
+Factory Pattern
+	- also known as Virtual Constructor.
+	- most used design pattern in Java 
+	- belong to the Creational Pattern as this pattern provides one of the best ways to create an object.
+	- we don't expose the creation logic to the client and refer the created object using a standard interface.
+	- allows the sub-classes to choose the type of objects to create.
+
+
+
+
+Prototype 
+	- used when we have an instance of the class (prototype) and we'd like to create new objects by just copying the prototype.
+
+
+				>>>>>>> Structural patterns <<<<<<<<
+
+Adapter
+ 	- a connector between two incompatible interfaces that otherwise cannot be connected directly
+ 	- used when an outside component provides captivating functionality that we'd like to reuse, but it's incompatible with our current application
+
+Facade 
+	- encapsulates a complex subsystem behind a simple interface
+
+
+
+
+				>>>>>>> Behavioral patterns <<<<<<<
+Strategy 
+	- allows us to change the behavior of an algorithm at runtime
+
+
+
+				>>>>>>> Java Enterprise patterns <<<<<<<
+
+Transfer Object pattern (DTO)
+	- For client, transfer object is read-only
+	- Client can create its own transfer object and pass it to server to update values in database
+	- Business object works with DTO rather then entity from DB.
+
+
+Front controller
+	- used to provide a centralized request handling mechanism so that all requests will be handled by a single handler
+	>>Components
+		* Front Controller - Single handler for all kinds of requests coming to the application 
+		* Dispatcher - Front Controller may use a dispatcher object which can dispatch the request to corresponding specific handler.
+		* View - Views are the object for which the requests are made.
